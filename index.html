@@ -53,9 +53,41 @@
 
         #admin-panel { position: fixed; inset: 0; background: #080808; z-index: 4000; display: none; padding: 25px; overflow-y: auto; }
         .admin-box { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #1a1a1a; margin-bottom: 20px; }
+
+        /* --- استايل الصفحة الجانبية الجديدة --- */
+        #contact-sidebar { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--card); z-index: 7000; transition: 0.4s ease-in-out; border-left: 2px solid var(--main); padding: 30px 20px; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
+        #sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; z-index: 6999; backdrop-filter: blur(5px); }
+        .contact-link { text-decoration: none; color: #fff; background: #1a1a1a; padding: 15px; border-radius: 15px; display: flex; align-items: center; gap: 12px; border: 1px solid #333; margin-bottom: 12px; transition: 0.3s; }
+        .contact-link:hover { border-color: var(--main); transform: translateX(-5px); }
     </style>
 </head>
 <body>
+
+<div id="sidebar-overlay" onclick="toggleSidebar()" style="display: none;"></div>
+<div id="contact-sidebar" style="right: -300px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+        <h3 style="color: var(--main); font-weight: 900;">الدعم والتواصل</h3>
+        <i class="fas fa-times" onclick="toggleSidebar()" style="cursor: pointer; font-size: 22px; color: var(--danger);"></i>
+    </div>
+    
+    <a href="https://instagram.com/ahmed_elbanna511" target="_blank" class="contact-link">
+        <i class="fab fa-instagram" style="color: #e1306c; font-size: 24px;"></i>
+        <span>انستجرام</span>
+    </a>
+    <a href="https://wa.me/201206781443" target="_blank" class="contact-link">
+        <i class="fab fa-whatsapp" style="color: #25d366; font-size: 24px;"></i>
+        <span>واتساب</span>
+    </a>
+    <a href="https://www.facebook.com/share/1EGfXCfp3P/" target="_blank" class="contact-link">
+        <i class="fab fa-facebook" style="color: #1877f2; font-size: 24px;"></i>
+        <span>فيسبوك</span>
+    </a>
+    
+    <div style="margin-top: 50px; text-align: center; opacity: 0.5; font-size: 12px;">
+        <p>ELBANNA STORE v2.0</p>
+        <p>تم التطوير بكل ❤️</p>
+    </div>
+</div>
 
 <div id="custom-alert" class="">
     <div class="alert-box">
@@ -105,7 +137,7 @@
 <div class="container" id="main-container" style="display: block;">
     <header>
         <div style="display:flex; justify-content:space-between; align-items:center;">
-            <i class="fas fa-cog" onclick="showAlert('قريباً بميزات أكبر...')" style="color:#333; font-size:20px; cursor:pointer;"></i>
+            <i class="fas fa-cog" onclick="toggleSidebar()" style="color:var(--main); font-size:22px; cursor:pointer; text-shadow: 0 0 10px var(--main);"></i>
             <h1 onclick="openAdminGate()">ELBANNA STORE</h1>
             <img id="my-avatar" src="https://cdn-icons-png.flaticon.com/512/924/924915.png" style="width:35px; height:35px; border-radius:50%; border:1px solid var(--main);">
         </div>
@@ -116,26 +148,13 @@
         <i class="fas fa-search"></i>
         <input type="text" id="app-search" placeholder="ابحث عن تطبيق..." oninput="searchApps()">
     </div>
-    <div id="apps-list">
-            <div class="app-card">
-                <div style="display:flex; gap:15px; align-items:start; margin-bottom:15px;">
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAA0JCgsKCA0LCgsODg0PEyAVExISEyccHhcgLikxMC4pLSwzOko+MzZGNywtQFdBRkxOUlNSMj5aYVpQYEpRUk//2wBDAQ4ODhMREyYVFSZPNS01T09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0//wAARCABkAGQDASIAAhEBAxEB/8QAHAAAAQUBAQEAAAAAAAAAAAAAAAMEBQYHAgEI/8QAOBAAAgEDAgMHAgQEBgMAAAAAAQIDAAQREiEFMUEGEyJRYXGRFIEHIzKhFbHB8DNCQ1Ji0YKywv/EABgBAQEBAQEAAAAAAAAAAAAAAAABAgME/8QAHxEAAgICAwEBAQAAAAAAAAAAAAECERIxIUFRMhMi/9oADAMBAAIRAxEAPwDTqKKKAKTmnht4zJPKkaDmWOBUJ2i7TQ8IQx28f1N0BkovKMebH+lZzxril3fvHJeT65RkKq43O2MDVjBx5ZwR51lyrhGlEvl9264Tb94LXXdtGpJKbL6bnnnflnkajz29mZw0VhEY3090plOpskjOw5ZHv15VQv4kIlEcTKijkVXUcYwCA3sDvg7nlmmycQlS4jlRQNC6SpAf3xqBxWf6ZeEaVH22uGjMhsoQo3OZsYG2522G/M46dSBS0PbdUuDBfWYR+80gpJkaepycAY9cdCMgg1my8TZA/dq2phpGsq6geilcD7Yr224i8MKRkZ06iSQGBznA0nKgb+WalSRLRsfDO0HDOJhRBcBZG/038Lcs7efMbjapSsdt+Jp9PIveBWQ5EiqDyBxpBwAM7kEDnjHIC08E7RXMEiWrgXEIOlGVixcYzt4mwR5HoRnFP0a+i43ovNFI2tzDdwiWBwy5wfMHqD5Glq6p2YCiiigCq52w7Rfwa1SC2Gu9ucLGP9mTjUf6VOX13FY2U13O2I4ULtv5Vi3FOJm+v57+4bxyN4csQQOgAxuMDH9R0zJ9GooSuZC7M0o/NLa5ZGO5GOR+R7bDfaouW4eRySx3J35EgmuZ5e8fO/yaTHKijRGzoV2K5FL2sPfzqnJebHOMAc9+la0Q8MbqiSMjBXyUYjAbBwcee9A881NSQpdxG3S0eMwxkoxGOQZsDbffbz3B/wB2YWsp2VqjpSRyJG2Nqk7Dib25TOr9RyFOMqRyGMEYydgepAxk5ix7UomQakkmEXrs9xOS2ujLaaTE7qrIg2fIz1/zfqI67Y35jQ7eeO5gSaFgyOMgisWsrh9W7tqJ2wBkE7A7DPx19zV87KcTMN0LKZwYph+WQDhXA5deY8WcnJzy5Vzi8ZV0batWXGiiiu5zKd+JN81vweC1QZNxJlh0KruQfTcfvWXXsijZTkrgDPNTjlzyBv8AOdquv4mtr45aopLabY5TVtnV1z/f2FUG7aQsO8CYGwK/P/1WNs3pCSKzsFQFmJwABzpZbaYuqqhLsAQoOScjI29qQADKxJAwM79d+lSgWV7wJZIz3QkyJXcatSjxemM4x96rdGUrGkFvLOVESE620r6ttsPXcfNKwQXYMTwowMrBIzpHibOMDPXIp5fQvbTniUULxusoLKTkwyggkH0PMGk72GQTXnhfWlyfDq2BJ2IGc52I5HnUysuNHol4qwn8UmLfBkHdjwYGny22/rSb2N1G7I0LalkWIj/kwJA++KeX0V3diW4MM8VysQ+sicHLDkHAPNc49qcX0VzLw2+uGfBaKzlYj/MpQj/2x8VjPwrXpFm1nQsHicFCwbbkV559qeWXDri5x3UTHOMbc8nSP32pxxObNxeTQ9yFNw0y94wZ/wAwBiQp5ADTvj79A+4TxGK1uWctJJII4mmkL6tTLMucHrsR8VJSdWhFKyFKtbzY/SwOCfKpy1u5IYo7mJh3iMrKWBB0qBkZOdhgLy3wDUJxGTVfT5OfG333p5aTWxTWO8nkDKza87eE6iDjw+IgZ9RWZK1Ztbo2W2mS4to542VkkUMCpyDmio3suxPALdNQdYtUSMBjUqkqD8CivRF2jk9lE/EmDT2khcFWMlvq0k45HG1US5k1YGgqdRbB65AGfkGtL/FSxzFZcRjUBlJidwSDjmu/Ib539RWcXYOnxHljAyMAeX7k+xFZ7LtCcLFYJsKjB9KYYcic7jyOxH3qS4Y8CRysmkXqKwVJVJXAXfltnbrUXBOIS2uJZY2xqRtvuD0NO5rhYVKQLb91JsRGxJ2x+o88em1SSb4LF1yOIZnurhy8jzzXaYk1AKoGDucHbSwz7U5uuH3N9xGW5t4sLO4khmZsA7ZCj1JwPeoiK7ZAEKIYywLqoClxkeEnnjakcJvgH/iDv80wd8DJdk53F5YueIzXSi7UAd1rBctlRoZfVSduWBj0pS9bu2vraMsEjtAuknkO/VlB9QrY9NxUPBeS28gltgkUgXSHRdx7E8jvzrv6sLNFLHCiFIwpHPWcYJPucmmLvkloml4ff3X+HbI0c9tEyylAxJWPZVPQkgjFOtNzZASTQILVrZlkVUA7qYoFweuosqnHrmqwsx7gwuWZAPApbZCSMkDpnHSiSRGERSFYmRArFSfGcnxe/L4rODLkh1xCRWv7gx/oMjFfbNP+H2kiwMupGdsP3fM4Klgf2Uf+RqFXVJIBuWY+9SwiK2zAQqVkbu20nBOdgM53w23qBnfpZKlQjuzWeyLBuz8GnJQM4QkY1LqOk/GKKe8HtfouEWlqNX5USr4+Y25GitxVIy9iHaLhY4xwS4ssgOy5jJ6MNxWIXETRytFICrxsVY8skAZBB9NvvX0FWedv+zcizHjHD0Yq2fqkUbYxjVj+dJLsqfRmMiGNiN8dCQa8QrqGvOn0p7Lb97H3n6c568j7evP70xZGXGoEZGRVTsjVDk3KG7EwhGN9S6v15Jzn5oW4XUDJAHACjdugx/PH702Br3NKQtj1r7vGhZogrRKEDK3QeldfWxNaNFLbl3JQA6saQqaf32P2phXoNMULH9xf/UB/yQpdy5Ibqc+nqPimma4HKl4IteXdSQOS8s9fsMb/AN5pwhsc8OjBlEj6dOQBk/P/AFyPzirZ2S4ceJcWhBEbRQ4aUpnDKuAu2cb4BPXO2AM1BQWtxLcRW0apJLIRoWInAO2P5756Y9BWudneDrwbhqwkhp38UrjkT5D0HL7VzrJm/lErRRRXU5hQQGBBAIOxBoooDOO1vYd45JL7g0eqEjVJbqSCDzyuOfnj3qhSRFU0yrIGB3LLgfHTr/Zr6EqD452U4VxrLzQ91cdJovC3386y4+Gk/TEJbYKTpbHTDfb/AL5c6TaF1xkczgDO/wAcxWgcR/D7itu2rh80V0gbKocI2MjIPTGB59ar1z2e43axuH4ZOV1bsUUg+eNs+21S2hSIAwTKuWicDzKmukt3YgkqoONydh7+X3xUqeGX7OhXhlwWLZ/wSPnIwT79aloey3HbqVjDw+eE4B8ZVMjPMdP3zTJjFFZW3ARGByW2BI5csbdOf36VM8JsL28vFgsbRpHK/pYkAbDxEnHkPj71ceF/h0yb8Uvy4znRDyzvvkj26dOtXWw4fZ8NtxBY26Qxjoo5+55mlN7LaWiH7M9lrbgiCZ8S3hG8mMBPRR0G5/smrDRRW0qMBRRRQBRRRQBRRRQBRRRQBRRRQBRRRQBRRRQBRRRQH//Z" class="app-icon-img" style="width:60px; height:60px; border-radius:15px; object-fit:cover;">
-                    <div style="flex:1">
-                        <h3 style="font-size:18px;">البنا الإسلامي</h3>
-                        <p style="font-size:11px; color:var(--main);">بواسطة: Ahmed Elbanna | v1.4</p>
-                        <p style="font-size:12px; color:#aaa; margin-top:5px;">العنوان: تطبيق "البنا الإسلامي" – الأناقة تلتقي بالعبادة.
-​"استمتع بتجربة إيمانية فريدة مع تطبيق البنا الإسلامي. 
-صُمم هذا التطبيق خصيصاً للمستخدم العربي الذي يبحث عن الجمال والدقة في آن واحد. بلمسات ذهبية وواجهة مستخدم عصرية، يوفر لك التطبيق كل ما تحتاجه في يومك: من تلاوات خاشعة بصوت الشيخ المنشاوي، ومواقيت صلاة دقيقة، إلى رقية شرعية وسبحة إلكترونية متطورة. 'البنا الإسلامي' ليس مجرد تطبيق، بل هو رفيقك الرقمي الذي ينبض بالحياة."</p>
-                    </div>
-                </div>
-                <button class="save-btn" onclick="openApp(0)">فتح التطبيق الآن</button>
-            </div></div>
+    <div id="apps-list"></div>
 </div>
 
-<div id="app-theater" style="display: none;">
+<div id="app-theater">
     <div class="theater-nav">
         <button onclick="closeTheater()" style="background:var(--danger); border:none; color:#fff; width:30px; height:30px; border-radius:50%; font-weight:bold;">×</button>
-        <span id="theater-title" style="color:var(--main); font-weight:bold;">البنا الإسلامي</span>
+        <span id="theater-title" style="color:var(--main); font-weight:bold;"></span>
         <div style="width:30px;"></div>
     </div>
     <iframe id="app-iframe"></iframe>
@@ -145,11 +164,7 @@
     <h2 style="color:var(--main); margin-bottom:20px;">لوحة التحكم</h2>
     <div class="admin-box">
         <h4>إدارة التطبيقات</h4>
-        <div id="admin-apps-list" style="margin-top:10px;">
-            <div style="display:flex; justify-content:space-between; padding:10px; background:#000; border-radius:10px; margin-bottom:5px;">
-                <span>البنا الإسلامي</span>
-                <i class="fas fa-trash" style="color:red; cursor:pointer;" onclick="deleteApp(0)"></i>
-            </div></div>
+        <div id="admin-apps-list" style="margin-top:10px;"></div>
     </div>
     <div class="admin-box">
         <h4>نشر تطبيق جديد</h4>
@@ -185,6 +200,18 @@
     let tempAvatar = "https://cdn-icons-png.flaticon.com/512/924/924915.png";
     let uploadedIconBase64 = "";
 
+    function toggleSidebar() {
+        const sidebar = document.getElementById('contact-sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        if (sidebar.style.right === '0px') {
+            sidebar.style.right = '-300px';
+            overlay.style.display = 'none';
+        } else {
+            sidebar.style.right = '0px';
+            overlay.style.display = 'block';
+        }
+    }
+
     function showAlert(msg, isPrompt = false, callback = null, isDanger = false) {
         const alertBox = document.getElementById('custom-alert');
         const alertInput = document.getElementById('alert-input');
@@ -206,7 +233,6 @@
     }
     function closeAlert() { document.getElementById('custom-alert').classList.remove('show'); }
 
-    // تفريغ المدخلات تماماً عند فتح لوحة التحكم أو المسح
     function clearPublishForm() {
         document.getElementById('new-app-name').value = "";
         document.getElementById('new-app-dev').value = "";
@@ -220,7 +246,7 @@
     function openAdminGate() {
         showAlert("أدخل كلمة مرور الإدارة للدخول", true, (pass) => {
             if(pass === ADMIN_KEY || pass === CORE_KEY) { 
-                clearPublishForm(); // تفريغ عند كل دخول
+                clearPublishForm(); 
                 document.getElementById('admin-panel').style.display = 'block';
                 renderAdminManage();
             } else {
@@ -285,7 +311,7 @@
                 body: JSON.stringify({ message: "Add App", content: btoa(unescape(encodeURIComponent(JSON.stringify(myStore)))), sha: data.sha })
             });
             showAlert("تم النشر بنجاح! 🚀"); loadAppsFromServer(); closeAdmin();
-            clearPublishForm(); // تفريغ بعد النشر بنجاح
+            clearPublishForm(); 
         } catch (e) { showAlert("خطأ في الاتصال بالسيرفر!"); }
     }
 

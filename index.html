@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
+<html lang="ar" dir="rtl"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ELBANNA STORE | النسخة الكاملة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --main: #00ffcc; --bg: #050505; --card: #121212; --text: #ffffff; --core: #ff0055; --star: #ffca08; }
@@ -44,7 +43,7 @@
 </head>
 <body>
 
-<div id="user-auth-overlay">
+<div id="user-auth-overlay" style="display: none;">
     <div class="auth-box">
         <i class="fas fa-rocket" style="font-size: 50px; color: var(--main); margin-bottom: 20px;"></i>
         <h2 style="color:var(--main); margin-bottom:20px;">ELBANNA STORE</h2>
@@ -53,16 +52,15 @@
     </div>
 </div>
 
-<div class="container" id="main-container">
+<div class="container" id="main-container" style="display: block;">
     <header>
         <h1 onclick="openAdminGate()">ELBANNA STORE</h1>
-        <p id="user-display" style="color: #666; font-size: 14px; margin-top: 5px;"></p>
+        <p id="user-display" style="color: #666; font-size: 14px; margin-top: 5px;">مرحباً بك: Ahmed Elbanna </p>
     </header>
-    <div id="apps-list">
-        </div>
+    <div id="apps-list"></div>
 </div>
 
-<div id="admin-panel">
+<div id="admin-panel" style="display: block;">
     <h2 style="color:var(--main); margin-bottom:20px;"><i class="fas fa-user-shield"></i> لوحة المدير العام</h2>
     
     <div class="admin-box">
@@ -204,5 +202,6 @@
         }
     }
 </script>
-</body>
-</html>
+
+
+</body></html>

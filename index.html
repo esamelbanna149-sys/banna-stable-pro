@@ -1,206 +1,326 @@
-<!DOCTYPE html>
 <html lang="ar" dir="rtl"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ELBANNA STORE | النسخة الكاملة</title>
+    <title>ELBANNA STORE | Stable Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --main: #00ffcc; --bg: #050505; --card: #121212; --text: #ffffff; --core: #ff0055; --star: #ffca08; }
+        :root { --main: #00ffcc; --bg: #050505; --card: #121212; --text: #ffffff; --danger: #ff4444; --star: #ffca08; --gray: #1a1a1a; --core: #ff0055; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: var(--main); border-radius: 10px; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); color: var(--text); min-height: 100vh; }
-        
-        /* الهيدر */
-        header { text-align: center; padding: 30px 20px; background: linear-gradient(to bottom, #111, var(--bg)); border-bottom: 1px solid #222; }
-        header h1 { font-size: 32px; color: var(--main); text-shadow: 0 0 20px var(--main); cursor: pointer; letter-spacing: 2px; }
-        
-        /* الحاوية */
-        .container { max-width: 600px; margin: auto; padding: 20px; display: none; }
-        
-        /* شكل بطاقة التطبيق (اللي كان ناقص) */
-        .app-card { background: var(--card); border-radius: 25px; padding: 20px; margin-bottom: 20px; border: 1px solid #222; position: relative; transition: 0.3s; }
-        .app-card:hover { transform: translateY(-5px); border-color: var(--main); }
-        .app-info h3 { font-size: 20px; margin-bottom: 5px; color: var(--main); }
-        .stars { color: var(--star); font-size: 14px; margin-bottom: 15px; }
-        
-        .download-btn { background: var(--main); color: #000; border: none; padding: 12px 25px; border-radius: 15px; font-weight: 900; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-        /* لوحة التحكم والمحرر */
-        #admin-panel { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; padding: 20px; overflow-y: auto; }
-        .admin-box { background: var(--card); padding: 20px; border-radius: 20px; margin-bottom: 20px; border: 1px solid #333; }
-        h4 { margin-bottom: 15px; color: var(--main); border-right: 4px solid var(--main); padding-right: 10px; }
-        
-        #core-code-editor { width: 100%; height: 300px; background: #000; color: #00ff00; font-family: monospace; padding: 15px; border-radius: 10px; border: 1px solid var(--core); direction: ltr; margin-top: 10px; }
-        
-        input, textarea { width: 100%; padding: 14px; margin-bottom: 12px; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 12px; outline: none; }
-        .save-btn { background: var(--main); color: #000; border: none; padding: 15px; border-radius: 15px; width: 100%; font-weight: 900; cursor: pointer; transition: 0.3s; }
-        .save-btn:active { transform: scale(0.95); }
+        /* --- نظام التنبيه المخصص (Custom Alert) --- */
+        #custom-alert { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .alert-box { background: var(--card); border: 2px solid var(--main); padding: 30px; border-radius: 25px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 0 30px rgba(0, 255, 204, 0.2); transform: scale(0.7); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #custom-alert.show { display: flex; }
+        #custom-alert.show .alert-box { transform: scale(1); }
+        .alert-box i { font-size: 45px; color: var(--main); margin-bottom: 15px; display: block; }
+        .alert-box p { font-size: 16px; margin-bottom: 20px; line-height: 1.5; font-weight: 700; }
+        .alert-btn { background: var(--main); color: #000; border: none; padding: 12px; border-radius: 15px; font-weight: 900; cursor: pointer; width: 100%; transition: 0.2s; }
+        .alert-btn:active { transform: scale(0.95); }
+
+        /* --- التنسيق العام للخانات --- */
+        input[type="text"], input[type="password"], input[type="file"], textarea { width: 100%; padding: 14px 18px; background: rgba(255, 255, 255, 0.03); border: 1px solid #222; border-radius: 14px; color: #fff; font-size: 14px; outline: none; transition: 0.3s; margin-bottom: 12px; display: block; }
+        input:focus, textarea:focus { border-color: var(--main); background: rgba(0, 255, 204, 0.05); box-shadow: 0 0 10px rgba(0, 255, 204, 0.1); }
 
         /* شاشة الدخول */
-        #user-auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 6000; display: flex; align-items: center; justify-content: center; }
-        .auth-box { background: var(--card); padding: 35px; border-radius: 30px; border: 1px solid var(--main); text-align: center; width: 90%; max-width: 380px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        #user-auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: flex; align-items: center; justify-content: center; overflow-y: auto; }
+        .auth-card { background: var(--card); padding: 30px; border-radius: 30px; border: 1px solid var(--main); width: 90%; max-width: 400px; text-align: center; }
+        .avatar-option { width: 50px; height: 50px; border-radius: 50%; margin: 5px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; opacity: 0.5; }
+        .avatar-option.selected { border-color: var(--main); opacity: 1; transform: scale(1.1); }
+
+        /* الصفحة الرئيسية */
+        .container { max-width: 600px; margin: auto; padding: 20px; display: none; }
+        header { text-align: center; padding: 20px 0; border-bottom: 1px solid #1a1a1a; margin-bottom: 20px; }
+        header h1 { font-size: 28px; font-weight: 900; color: var(--main); text-shadow: 0 0 15px var(--main); cursor: pointer; }
+        
+        .search-wrapper { position: relative; margin-bottom: 20px; }
+        .search-wrapper i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--main); }
+        #app-search { padding-right: 45px; margin-bottom: 0; }
+
+        .app-card { background: var(--card); border-radius: 25px; padding: 20px; margin-bottom: 15px; border: 1px solid #1a1a1a; transition: 0.3s; }
+        .app-card:hover { border-color: var(--main); transform: translateY(-3px); }
+        .app-icon-img { width: 60px; height: 60px; border-radius: 15px; object-fit: cover; }
+        .save-btn { background: var(--main); color: #000; width: 100%; padding: 14px; border: none; border-radius: 14px; font-weight: 900; cursor: pointer; transition: 0.3s; }
+        .save-btn:hover { opacity: 0.8; box-shadow: 0 0 15px var(--main); }
+
+        /* المسرح (iframe) والتقييمات */
+        #app-theater { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; flex-direction: column; }
+        .theater-nav { background: #111; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--main); }
+        #app-iframe { flex: 1; border: none; background: #fff; }
+
+        #review-panel { position: absolute; bottom: 0; left: 0; right: 0; height: 70vh; background: #0a0a0a; border-top: 2px solid var(--main); z-index: 2100; display: none; padding: 20px; overflow-y: auto; }
+        .comment-card { background: #151515; padding: 12px; border-radius: 15px; margin-bottom: 10px; border-right: 3px solid var(--main); position: relative; }
+
+        /* لوحة المطور والمحرر */
+        #admin-panel { position: fixed; inset: 0; background: #080808; z-index: 4000; display: none; padding: 25px; overflow-y: auto; }
+        .admin-box { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #1a1a1a; margin-bottom: 20px; }
+        #core-code-editor { width: 100%; height: 300px; background: #000; color: #00ff00; font-family: monospace; padding: 15px; border-radius: 10px; border: 1px solid var(--core); direction: ltr; margin-top: 10px; }
     </style>
 </head>
 <body>
 
+<div id="custom-alert">
+    <div class="alert-box">
+        <i class="fas fa-bell" id="alert-icon"></i>
+        <p id="alert-text">رسالة النظام</p>
+        <button class="alert-btn" onclick="closeAlert()">حسناً</button>
+    </div>
+</div>
+
 <div id="user-auth-overlay" style="display: none;">
-    <div class="auth-box">
-        <i class="fas fa-rocket" style="font-size: 50px; color: var(--main); margin-bottom: 20px;"></i>
-        <h2 style="color:var(--main); margin-bottom:20px;">ELBANNA STORE</h2>
-        <input type="text" id="auth-user" placeholder="اكتب اسمك يا بطل">
-        <button class="save-btn" onclick="handleAuth()">دخول للمتجر 🚀</button>
+    <div class="auth-card">
+        <h2 style="color:var(--main); margin-bottom:15px;">ELBANNA STORE</h2>
+        <div style="display:flex; gap:10px; margin-bottom:20px;">
+            <button onclick="switchAuth('up')" id="btn-up" style="flex:1; background:var(--main); padding:10px; border-radius:10px; border:none; font-weight:bold;">تسجيل</button>
+            <button onclick="switchAuth('in')" id="btn-in" style="flex:1; background:#222; color:#fff; padding:10px; border-radius:10px; border:none;">دخول</button>
+        </div>
+        <div id="reg-avatar-section">
+            <div class="avatar-selection" style="margin-bottom:15px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/924/924915.png" class="avatar-option selected" onclick="selectAvatar(this)">
+                <img src="https://cdn-icons-png.flaticon.com/512/168/168724.png" class="avatar-option" onclick="selectAvatar(this)">
+                <img src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" class="avatar-option" onclick="selectAvatar(this)">
+                <img src="https://cdn-icons-png.flaticon.com/512/219/219983.png" class="avatar-option" onclick="selectAvatar(this)">
+            </div>
+        </div>
+        <input type="text" id="auth-user" placeholder="اسم المستخدم">
+        <input type="password" id="auth-pass" placeholder="كلمة السر">
+        <button class="save-btn" onclick="handleAuth()">انطلاق 🚀</button>
     </div>
 </div>
 
 <div class="container" id="main-container" style="display: block;">
     <header>
-        <h1 onclick="openAdminGate()">ELBANNA STORE</h1>
-        <p id="user-display" style="color: #666; font-size: 14px; margin-top: 5px;">مرحباً بك: Ahmed Elbanna </p>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <i class="fas fa-cog" onclick="showAlert('قريباً بميزات أكبر...')" style="color:#333; font-size:20px; cursor:pointer;"></i>
+            <h1 onclick="openAdminGate()">ELBANNA STORE</h1>
+            <img id="my-avatar" src="https://cdn-icons-png.flaticon.com/512/924/924915.png" style="width:35px; height:35px; border-radius:50%; border:1px solid var(--main);">
+        </div>
+        <p id="my-name" style="font-size:12px; color:var(--main); margin-top:5px;">@Ahmed</p>
     </header>
-    <div id="apps-list"></div>
+
+    <div class="search-wrapper">
+        <i class="fas fa-search"></i>
+        <input type="text" id="app-search" placeholder="ابحث عن تطبيق..." oninput="searchApps()">
+    </div>
+
+    <div id="apps-list">
+            <div class="app-card">
+                <div style="display:flex; gap:15px; align-items:start; margin-bottom:15px;">
+                    <img src="data:image/jpeg;base64,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" class="app-icon-img">
+                    <div style="flex:1">
+                        <h3 style="font-size:18px;">البنا الإسلامي</h3>
+                        <p style="font-size:11px; color:var(--main);">بواسطة: Ahmed Elbanna </p>
+                    </div>
+                </div>
+                <button class="save-btn" onclick="openApp(0)">فتح التطبيق الآن</button>
+            </div></div>
+</div>
+
+<div id="app-theater" style="display: none;">
+    <div class="theater-nav">
+        <button onclick="closeTheater()" style="background:var(--danger); border:none; color:#fff; width:30px; height:30px; border-radius:50%; font-weight:bold;">×</button>
+        <span id="theater-title" style="color:var(--main); font-weight:bold;">البنا الإسلامي</span>
+        <button onclick="toggleReviews()" style="background:#222; border:1px solid var(--main); color:var(--main); padding:6px 15px; border-radius:10px; font-size:12px;">التقييمات</button>
+    </div>
+    <iframe id="app-iframe"></iframe>
+    <div id="review-panel">
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+            <h3>الآراء والتقييمات ⭐</h3>
+            <button onclick="toggleReviews()" style="color:#fff; background:none; border:none; font-size:20px;">×</button>
+        </div>
+        <div id="comments-list"></div>
+    </div>
 </div>
 
 <div id="admin-panel" style="display: block;">
-    <h2 style="color:var(--main); margin-bottom:20px;"><i class="fas fa-user-shield"></i> لوحة المدير العام</h2>
-    
+    <h2 style="color:var(--main); margin-bottom:20px;">لوحة التحكم</h2>
     <div class="admin-box">
-        <h4><i class="fas fa-plus"></i> إضافة تطبيق جديد</h4>
+        <h4>إدارة التطبيقات</h4>
+        <div id="admin-apps-list" style="margin-top:10px;"></div>
+    </div>
+    <div class="admin-box">
+        <h4>نشر تطبيق جديد</h4>
         <input type="text" id="new-app-name" placeholder="اسم التطبيق">
-        <input type="text" id="new-app-icon" placeholder="رابط أيقونة التطبيق (اختياري)">
-        <textarea id="new-app-code" placeholder="كود التطبيق أو رابط التحميل" style="height: 80px;"></textarea>
-        <button class="save-btn" onclick="publishApp()">نشر في المتجر 📡</button>
+        <input type="text" id="new-app-dev" placeholder="اسم المبرمج">
+        <input type="file" id="new-app-icon-file" accept="image/*">
+        <textarea id="new-app-code" placeholder="الصق كود HTML هنا" style="height:100px;"></textarea>
+        <button id="publish-main-btn" class="save-btn" onclick="publishApp()">حفظ ونشر سحابي 🚀</button>
     </div>
 
     <div class="admin-box" style="border-color: var(--core);">
         <h4 style="color: var(--core); border-color: var(--core);"><i class="fas fa-code"></i> محرر كيان المتجر (أحمد عصام)</h4>
-        <p style="font-size: 12px; color: #888; margin-bottom: 10px;">عدل كود الـ HTML هنا واحفظ، المتجر هيتغير عند الكل فوراً.</p>
         <textarea id="core-code-editor" spellcheck="false"></textarea>
         <button id="update-core-btn" class="save-btn" style="background: var(--core); color: #fff; margin-top:10px;" onclick="verifyAndUpdateCore()">حفظ وتحديث الكيان ⚠️</button>
     </div>
 
-    <button class="save-btn" style="background:#222; color:#fff;" onclick="closeAdmin()">إغلاق اللوحة</button>
+    <button class="save-btn" style="background:#222; color:#fff;" onclick="closeAdmin()">إغلاق</button>
 </div>
 
 <script>
-    // الإعدادات السحابية
+    // --- التوكين المقسم (إضافة من الكود 2) ---
     const PART_1 = "ghp_W1tlIP3UiSQlNr3b"; 
     const PART_2 = "4GByHDpDfvdiNg0mx9rO";
-    const MY_KEY = PART_1 + PART_2;
-    const ADMIN_KEY = "mano5112006"; 
+    const GITHUB_TOKEN = PART_1 + PART_2;
+
+    const ADMIN_KEY = "mano5112006";
     const CORE_KEY = "ahmedesam5112006"; 
     const GITHUB_USER = "esamelbanna149-sys"; 
     const REPO_NAME = "banna-stable-pro";
+    const FILE_PATH = "apps.json";            
 
-    let myStore = [];
+    let myStore = []; 
+    let users = JSON.parse(localStorage.getItem('banna_accounts')) || {};
+    let activeUser = localStorage.getItem('active_session');
+    let currentAuthMode = 'up';
+    let tempAvatar = "https://cdn-icons-png.flaticon.com/512/924/924915.png";
+    let uploadedIconBase64 = "";
 
-    // وظيفة الدخول
-    function handleAuth() {
-        const user = document.getElementById('auth-user').value;
-        if(user) {
-            document.getElementById('user-auth-overlay').style.display = 'none';
-            document.getElementById('main-container').style.display = 'block';
-            document.getElementById('user-display').innerText = "مرحباً بك: " + user;
-            loadApps();
+    // معالجة الأيقونات (Base64)
+    document.getElementById('new-app-icon-file')?.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 100; canvas.height = 100;
+                    ctx.drawImage(img, 0, 0, 100, 100);
+                    uploadedIconBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
         }
-    }
+    });
 
-    // فتح اللوحة السرية
-    function openAdminGate() {
-        const p = prompt("كلمة سر اللوحة:");
-        if (p === ADMIN_KEY || p === CORE_KEY) {
-            document.getElementById('admin-panel').style.display = 'block';
-            document.getElementById('core-code-editor').value = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-        }
-    }
-
-    function closeAdmin() { document.getElementById('admin-panel').style.display = 'none'; }
-
-    // تحميل التطبيقات من المخزن
-    async function loadApps() {
+    async function loadAppsFromServer() {
         try {
-            const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/apps.json`);
+            const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/${FILE_PATH}?t=${Date.now()}`;
+            const res = await fetch(url);
             const data = await res.json();
             myStore = JSON.parse(decodeURIComponent(escape(atob(data.content))));
             renderApps();
-        } catch (e) { console.log("المخزن جديد"); }
+        } catch (e) { renderApps(); }
     }
 
-    function renderApps() {
-        document.getElementById('apps-list').innerHTML = myStore.map((app, index) => `
-            <div class="app-card">
-                <div class="app-info">
-                    <h3>${app.name}</h3>
-                    <div class="stars">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        <span style="color:#666; margin-right:10px;">(5.0)</span>
-                    </div>
-                </div>
-                <button class="download-btn" onclick="alert('جاري تشغيل: ${app.name}')">
-                    <i class="fas fa-download"></i> تحميل / فتح
-                </button>
-            </div>
-        `).join('');
-    }
-
-    // نشر تطبيق جديد
-    async function publishApp() {
-        const name = document.getElementById('new-app-name').value;
-        const code = document.getElementById('new-app-code').value;
-        if(!name || !code) return alert("اكمل البيانات!");
-
-        myStore.push({name, code});
-        const btn = event.target;
-        btn.innerText = "جاري النشر... ⏳";
-
-        try {
-            const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/apps.json`;
-            const res = await fetch(url, { headers: { "Authorization": `token ${MY_KEY}` } });
-            const data = await res.json();
-
-            await fetch(url, {
-                method: "PUT",
-                headers: { "Authorization": `token ${MY_KEY}`, "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    message: "New App Added",
-                    content: btoa(unescape(encodeURIComponent(JSON.stringify(myStore)))),
-                    sha: data.sha
-                })
-            });
-            alert("تم النشر بنجاح!");
-            renderApps();
-            closeAdmin();
-        } catch (e) { alert("خطأ!"); }
-        btn.innerText = "نشر في المتجر 📡";
-    }
-
-    // تحديث كيان المتجر (المحرر)
+    // تحديث الكيان السحابي
     async function verifyAndUpdateCore() {
         const pass = prompt("باسورد المدير (أحمد عصام):");
         if (pass === CORE_KEY) {
             const newCode = document.getElementById('core-code-editor').value;
             const btn = document.getElementById('update-core-btn');
-            btn.innerText = "جاري رفع الكيان الجديد... 🚀";
-            
+            btn.innerText = "جاري رفع الكيان... ⏳";
             try {
                 const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/index.html`;
-                const res = await fetch(url, { headers: { "Authorization": `token ${MY_KEY}` } });
+                const res = await fetch(url, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
                 const data = await res.json();
-
                 await fetch(url, {
                     method: "PUT",
-                    headers: { "Authorization": `token ${MY_KEY}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        message: "Store Core Updated by Ahmed",
-                        content: btoa(unescape(encodeURIComponent(newCode))),
-                        sha: data.sha
-                    })
+                    headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: "Core Update", content: btoa(unescape(encodeURIComponent(newCode))), sha: data.sha })
                 });
-                alert("مبروك يا مدير! الكيان اتحدث.");
-                location.reload();
-            } catch (e) { alert("خطأ في السحاب!"); }
-            btn.innerText = "حفظ وتحديث الكيان ⚠️";
+                alert("تم التحديث بنجاح!"); location.reload();
+            } catch (e) { alert("فشل التحديث!"); }
         }
     }
+
+    // جماليات العرض والوظائف الأساسية (الكود 1)
+    function showAlert(msg) { document.getElementById('alert-text').innerText = msg; document.getElementById('custom-alert').classList.add('show'); }
+    function closeAlert() { document.getElementById('custom-alert').classList.remove('show'); }
+
+    function handleAuth() {
+        const u = document.getElementById('auth-user').value.trim();
+        const p = document.getElementById('auth-pass').value.trim();
+        if(!u || !p) return showAlert("برجاء إكمال البيانات!");
+        if(currentAuthMode === 'up') {
+            users[u] = { pass: p, avatar: tempAvatar };
+            localStorage.setItem('banna_accounts', JSON.stringify(users));
+            login(u);
+        } else {
+            if(users[u] && users[u].pass === p) login(u);
+            else showAlert("بيانات الدخول خاطئة!");
+        }
+    }
+
+    function login(u) {
+        activeUser = u; localStorage.setItem('active_session', u);
+        document.getElementById('user-auth-overlay').style.display = 'none';
+        document.getElementById('main-container').style.display = 'block';
+        document.getElementById('my-name').innerText = "@" + activeUser;
+        document.getElementById('my-avatar').src = users[activeUser].avatar;
+        loadAppsFromServer();
+    }
+
+    function renderApps(list = myStore) {
+        document.getElementById('apps-list').innerHTML = list.map((app, i) => `
+            <div class="app-card">
+                <div style="display:flex; gap:15px; align-items:start; margin-bottom:15px;">
+                    <img src="${app.icon || ''}" class="app-icon-img">
+                    <div style="flex:1">
+                        <h3 style="font-size:18px;">${app.name}</h3>
+                        <p style="font-size:11px; color:var(--main);">بواسطة: ${app.developer}</p>
+                    </div>
+                </div>
+                <button class="save-btn" onclick="openApp(${i})">فتح التطبيق الآن</button>
+            </div>`).join('');
+    }
+
+    function openApp(i) {
+        document.getElementById('app-theater').style.display = 'flex';
+        document.getElementById('theater-title').innerText = myStore[i].name;
+        const doc = document.getElementById('app-iframe').contentWindow.document;
+        doc.open(); doc.write(myStore[i].code); doc.close();
+    }
+    function closeTheater() { document.getElementById('app-theater').style.display = 'none'; }
+
+    function openAdminGate() {
+        const p = prompt("كلمة السر:");
+        if(p === ADMIN_KEY || p === CORE_KEY) { 
+            document.getElementById('admin-panel').style.display = 'block';
+            document.getElementById('core-code-editor').value = document.documentElement.outerHTML;
+            renderAdminManage();
+        }
+    }
+
+    async function publishApp() {
+        const name = document.getElementById('new-app-name').value;
+        const code = document.getElementById('new-app-code').value;
+        myStore.push({ name, developer: document.getElementById('new-app-dev').value, icon: uploadedIconBase64, code });
+        try {
+            const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/${FILE_PATH}`;
+            const res = await fetch(url, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
+            const data = await res.json();
+            await fetch(url, {
+                method: "PUT",
+                headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ message: "Add App", content: btoa(unescape(encodeURIComponent(JSON.stringify(myStore)))), sha: data.sha })
+            });
+            alert("تم النشر!"); loadAppsFromServer(); closeAdmin();
+        } catch (e) { alert("خطأ!"); }
+    }
+
+    function renderAdminManage() {
+        document.getElementById('admin-apps-list').innerHTML = myStore.map((a, i) => `
+            <div style="display:flex; justify-content:space-between; padding:10px; background:#000; border-radius:10px; margin-bottom:5px;">
+                <span>${a.name}</span>
+                <i class="fas fa-trash" style="color:red; cursor:pointer;" onclick="deleteApp(${i})"></i>
+            </div>`).join('');
+    }
+
+    function switchAuth(m) { currentAuthMode = m; document.getElementById('reg-avatar-section').style.display = m === 'up' ? 'block' : 'none'; }
+    function selectAvatar(el) { document.querySelectorAll('.avatar-option').forEach(img => img.classList.remove('selected')); el.classList.add('selected'); tempAvatar = el.src; }
+    function closeAdmin() { document.getElementById('admin-panel').style.display = 'none'; }
+    function searchApps() {
+        const q = document.getElementById('app-search').value.toLowerCase();
+        renderApps(myStore.filter(a => a.name.toLowerCase().includes(q)));
+    }
+
+    window.onload = () => { if(activeUser) login(activeUser); else loadAppsFromServer(); };
 </script>
 
 

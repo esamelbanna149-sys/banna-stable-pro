@@ -7,20 +7,41 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --main: #00ffcc; --bg: #050505; --card: rgba(18, 18, 18, 0.85); --text: #ffffff; --danger: #ff4444; --star: #ffca08; --gray: #1a1a1a; --core: #ff0055; }
+        :root { --main: #00ffcc; --bg: #050505; --card: #121212; --text: #ffffff; --danger: #ff4444; --star: #ffca08; --gray: #1a1a1a; --core: #ff0055; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-thumb { background: var(--main); border-radius: 10px; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-        /* --- نظام التنبيه المخصص (Custom Alert) --- */
-        #custom-alert { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .alert-box { background: #121212; border: 2px solid var(--main); padding: 30px; border-radius: 25px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 0 30px rgba(0, 255, 204, 0.2); transform: scale(0.7); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        /* --- نظام التنبيه المخصص المطور (Custom Alert) --- */
+        #custom-alert { 
+            position: fixed; inset: 0; 
+            background: rgba(0,0,0,0.85); 
+            z-index: 10000; display: none; 
+            align-items: center; justify-content: center; 
+            backdrop-filter: blur(10px); 
+        }
+        .alert-box { 
+            background: linear-gradient(145deg, #121212, #0a0a0a); 
+            border: 2px solid var(--main); 
+            padding: 30px; border-radius: 25px; 
+            width: 85%; max-width: 340px; 
+            text-align: center; 
+            box-shadow: 0 0 40px rgba(0, 255, 204, 0.15); 
+            transform: scale(0.8); opacity: 0;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
         #custom-alert.show { display: flex; }
-        #custom-alert.show .alert-box { transform: scale(1); }
-        .alert-box i { font-size: 45px; color: var(--main); margin-bottom: 15px; display: block; }
-        .alert-box p { font-size: 16px; margin-bottom: 20px; line-height: 1.5; font-weight: 700; }
+        #custom-alert.show .alert-box { transform: scale(1); opacity: 1; }
+        .alert-box i { font-size: 50px; color: var(--main); margin-bottom: 20px; display: block; text-shadow: 0 0 15px var(--main); }
+        .alert-box p { font-size: 17px; margin-bottom: 20px; line-height: 1.5; font-weight: 700; color: #fff; }
+        
+        /* خانة الإدخال داخل الكارت */
+        #alert-input { display: none; width: 100%; margin-bottom: 20px; text-align: center; letter-spacing: 4px; }
+        
+        .alert-btns-group { display: flex; gap: 10px; }
         .alert-btn { background: var(--main); color: #000; border: none; padding: 12px; border-radius: 15px; font-weight: 900; cursor: pointer; width: 100%; transition: 0.2s; }
+        .alert-btn.cancel { background: #222; color: #fff; display: none; }
         .alert-btn:active { transform: scale(0.95); }
 
         /* --- التنسيق العام للخانات --- */
@@ -29,7 +50,7 @@
 
         /* شاشة الدخول */
         #user-auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: flex; align-items: center; justify-content: center; overflow-y: auto; }
-        .auth-card { background: #121212; padding: 30px; border-radius: 30px; border: 1px solid var(--main); width: 90%; max-width: 400px; text-align: center; }
+        .auth-card { background: var(--card); padding: 30px; border-radius: 30px; border: 1px solid var(--main); width: 90%; max-width: 400px; text-align: center; }
         .avatar-option { width: 50px; height: 50px; border-radius: 50%; margin: 5px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; opacity: 0.5; }
         .avatar-option.selected { border-color: var(--main); opacity: 1; transform: scale(1.1); }
 
@@ -42,18 +63,10 @@
         .search-wrapper i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--main); }
         #app-search { padding-right: 45px; margin-bottom: 0; }
 
-        /* --- تنسيق كروت الجافا سكريبت المحدث --- */
-        .app-card { background: var(--card); backdrop-filter: blur(10px); border-radius: 30px; padding: 25px; margin-bottom: 20px; border: 1px solid #1a1a1a; transition: 0.4s; display: grid; grid-template-columns: 80px 1fr; grid-template-rows: auto auto auto; gap: 15px; }
-        .app-card:hover { border-color: var(--main); transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0, 255, 204, 0.1); }
-        .app-icon-img { grid-column: 1 / 2; grid-row: 1 / 3; width: 80px; height: 80px; border-radius: 20px; object-fit: cover; }
-        .app-details { grid-column: 2 / 3; grid-row: 1 / 3; display: flex; flex-direction: column; justify-content: space-between; }
-        .app-name { font-size: 20px; font-weight: 700; color: #fff; display: flex; justify-content: space-between; align-items: center; }
-        .app-version { font-size: 11px; color: #555; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 6px; font-weight: 400; }
-        .app-developer { font-size: 13px; color: var(--main); margin-bottom: 3px; }
-        .app-description { font-size: 14px; color: #aaa; grid-column: 1 / 3; grid-row: 3 / 4; margin-top: 5px; line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-        
-        .card-btn { grid-column: 1 / 3; grid-row: 4 / 5; margin-top: 10px; }
-        .save-btn { background: var(--main); color: #000; width: 100%; padding: 16px; border: none; border-radius: 18px; font-weight: 900; cursor: pointer; transition: 0.3s; font-size: 15px; }
+        .app-card { background: var(--card); border-radius: 25px; padding: 20px; margin-bottom: 15px; border: 1px solid #1a1a1a; transition: 0.3s; }
+        .app-card:hover { border-color: var(--main); transform: translateY(-3px); }
+        .app-icon-img { width: 60px; height: 60px; border-radius: 15px; object-fit: cover; }
+        .save-btn { background: var(--main); color: #000; width: 100%; padding: 14px; border: none; border-radius: 14px; font-weight: 900; cursor: pointer; transition: 0.3s; }
         .save-btn:hover { opacity: 0.8; box-shadow: 0 0 15px var(--main); }
 
         /* المسرح (iframe) */
@@ -63,8 +76,8 @@
 
         /* لوحة المطور والمحرر */
         #admin-panel { position: fixed; inset: 0; background: #080808; z-index: 4000; display: none; padding: 25px; overflow-y: auto; }
-        .admin-box { background: #121212; padding: 20px; border-radius: 20px; border: 1px solid #1a1a1a; margin-bottom: 20px; }
-        #core-editor-wrapper { display: none; } /* مخفي افتراضياً */
+        .admin-box { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #1a1a1a; margin-bottom: 20px; }
+        #core-editor-wrapper { display: none; } 
         #core-code-editor { width: 100%; height: 300px; background: #000; color: #00ff00; font-family: monospace; padding: 15px; border-radius: 10px; border: 1px solid var(--core); direction: ltr; margin-top: 10px; }
     </style>
 </head>
@@ -72,9 +85,13 @@
 
 <div id="custom-alert">
     <div class="alert-box">
-        <i class="fas fa-bell" id="alert-icon"></i>
+        <i class="fas fa-shield-alt" id="alert-icon"></i>
         <p id="alert-text">رسالة النظام</p>
-        <button class="alert-btn" onclick="closeAlert()">حسناً</button>
+        <input type="password" id="alert-input" placeholder="أدخل كلمة السر">
+        <div class="alert-btns-group">
+            <button class="alert-btn cancel" id="alert-cancel-btn" onclick="closeAlert()">إلغاء</button>
+            <button class="alert-btn" id="alert-confirm-btn">حسناً</button>
+        </div>
     </div>
 </div>
 
@@ -173,6 +190,74 @@
     let tempAvatar = "https://cdn-icons-png.flaticon.com/512/924/924915.png";
     let uploadedIconBase64 = "";
 
+    // --- نظام التنبيه والمطالبة المطور ---
+    function showAlert(msg, isPrompt = false, callback = null) {
+        const alertBox = document.getElementById('custom-alert');
+        const alertInput = document.getElementById('alert-input');
+        const cancelBtn = document.getElementById('alert-cancel-btn');
+        const confirmBtn = document.getElementById('alert-confirm-btn');
+        
+        document.getElementById('alert-text').innerText = msg;
+        alertInput.style.display = isPrompt ? 'block' : 'none';
+        cancelBtn.style.display = isPrompt ? 'block' : 'none';
+        alertInput.value = "";
+        
+        confirmBtn.onclick = () => {
+            if(isPrompt && callback) callback(alertInput.value);
+            closeAlert();
+        };
+        alertBox.classList.add('show');
+    }
+
+    function closeAlert() { document.getElementById('custom-alert').classList.remove('show'); }
+
+    // --- فتح بوابات الإدارة بالشكل الجديد ---
+    function openAdminGate() {
+        showAlert("أدخل كلمة مرور الإدارة للدخول", true, (pass) => {
+            if(pass === ADMIN_KEY || pass === CORE_KEY) { 
+                document.getElementById('admin-panel').style.display = 'block';
+                renderAdminManage();
+            } else {
+                showAlert("عذراً، كلمة المرور خاطئة! ❌");
+            }
+        });
+    }
+
+    function unlockCoreEditor() {
+        showAlert("أدخل باسورد الكيان (أحمد عصام):", true, (pass) => {
+            if (pass === CORE_KEY) {
+                document.getElementById('core-editor-wrapper').style.display = 'block';
+                document.getElementById('unlock-core-btn').style.display = 'none';
+                document.getElementById('core-code-editor').value = document.documentElement.outerHTML;
+            } else {
+                showAlert("عذراً، الباسورد غير صحيح.");
+            }
+        });
+    }
+
+    async function verifyAndUpdateCore() {
+        showAlert("تأكيد الباسورد للحفظ النهائي:", true, async (pass) => {
+            if (pass === CORE_KEY) {
+                const newCode = document.getElementById('core-code-editor').value;
+                try {
+                    const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/index.html`;
+                    const res = await fetch(url, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
+                    const data = await res.json();
+                    await fetch(url, {
+                        method: "PUT",
+                        headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+                        body: JSON.stringify({ message: "Core Update", content: btoa(unescape(encodeURIComponent(newCode))), sha: data.sha })
+                    });
+                    showAlert("تم تحديث الكيان بنجاح! سيتم إعادة التحميل.");
+                    setTimeout(() => location.reload(), 2000);
+                } catch (e) { showAlert("فشل التحديث! تحقق من الـ Token."); }
+            } else {
+                showAlert("الباسورد خاطئ، لم يتم الحفظ.");
+            }
+        });
+    }
+
+    // باقي العمليات الأساسية كما هي دون تغيير
     document.getElementById('new-app-icon-file')?.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
@@ -202,40 +287,6 @@
         } catch (e) { renderApps(); }
     }
 
-    function unlockCoreEditor() {
-        const pass = prompt("باسورد الوصول للكيان:");
-        if (pass === CORE_KEY) {
-            document.getElementById('core-editor-wrapper').style.display = 'block';
-            document.getElementById('unlock-core-btn').style.display = 'none';
-            document.getElementById('core-code-editor').value = document.documentElement.outerHTML;
-        } else {
-            alert("عذراً، الباسورد غير صحيح.");
-        }
-    }
-
-    async function verifyAndUpdateCore() {
-        const pass = prompt("تأكيد الباسورد للحفظ (أحمد عصام):");
-        if (pass === CORE_KEY) {
-            const newCode = document.getElementById('core-code-editor').value;
-            const btn = document.getElementById('update-core-btn');
-            btn.innerText = "جاري رفع الكيان... ⏳";
-            try {
-                const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/index.html`;
-                const res = await fetch(url, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
-                const data = await res.json();
-                await fetch(url, {
-                    method: "PUT",
-                    headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: "Core Update", content: btoa(unescape(encodeURIComponent(newCode))), sha: data.sha })
-                });
-                alert("تم التحديث بنجاح!"); location.reload();
-            } catch (e) { alert("فشل التحديث!"); btn.innerText = "حفظ وتحديث الكيان ⚠️"; }
-        }
-    }
-
-    function showAlert(msg) { document.getElementById('alert-text').innerText = msg; document.getElementById('custom-alert').classList.add('show'); }
-    function closeAlert() { document.getElementById('custom-alert').classList.remove('show'); }
-
     function handleAuth() {
         const u = document.getElementById('auth-user').value.trim();
         const p = document.getElementById('auth-pass').value.trim();
@@ -262,18 +313,15 @@
     function renderApps(list = myStore) {
         document.getElementById('apps-list').innerHTML = list.map((app, i) => `
             <div class="app-card">
-                <img src="${app.icon || ''}" class="app-icon-img">
-                <div class="app-details">
-                    <div class="app-name">
-                        ${app.name}
-                        <span class="app-version">v${app.version || '1.0'}</span>
+                <div style="display:flex; gap:15px; align-items:start; margin-bottom:15px;">
+                    <img src="${app.icon || ''}" class="app-icon-img">
+                    <div style="flex:1">
+                        <h3 style="font-size:18px;">${app.name} <span style="font-size:10px; color:#555;">v${app.version || '1.0'}</span></h3>
+                        <p style="font-size:11px; color:var(--main);">بواسطة: ${app.developer}</p>
+                        <p style="font-size:12px; color:#aaa; margin-top:5px;">${app.description || ''}</p>
                     </div>
-                    <p class="app-developer">بواسطة: ${app.developer}</p>
                 </div>
-                <p class="app-description">${app.description || ''}</p>
-                <div class="card-btn">
-                    <button class="save-btn" onclick="openApp(${i})">فتح التطبيق الآن</button>
-                </div>
+                <button class="save-btn" onclick="openApp(${i})">فتح التطبيق الآن</button>
             </div>`).join('');
     }
 
@@ -285,14 +333,6 @@
     }
     function closeTheater() { document.getElementById('app-theater').style.display = 'none'; }
 
-    function openAdminGate() {
-        const p = prompt("كلمة السر:");
-        if(p === ADMIN_KEY || p === CORE_KEY) { 
-            document.getElementById('admin-panel').style.display = 'block';
-            renderAdminManage();
-        }
-    }
-
     async function publishApp() {
         const name = document.getElementById('new-app-name').value;
         const code = document.getElementById('new-app-code').value;
@@ -300,12 +340,8 @@
         const description = document.getElementById('new-app-desc').value;
         
         myStore.push({ 
-            name, 
-            developer: document.getElementById('new-app-dev').value, 
-            version,
-            description,
-            icon: uploadedIconBase64, 
-            code 
+            name, developer: document.getElementById('new-app-dev').value, 
+            version, description, icon: uploadedIconBase64, code 
         });
         
         try {
@@ -317,8 +353,8 @@
                 headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
                 body: JSON.stringify({ message: "Add App", content: btoa(unescape(encodeURIComponent(JSON.stringify(myStore)))), sha: data.sha })
             });
-            alert("تم النشر!"); loadAppsFromServer(); closeAdmin();
-        } catch (e) { alert("خطأ!"); }
+            showAlert("تم النشر سحابياً بنجاح! 🚀"); loadAppsFromServer(); closeAdmin();
+        } catch (e) { showAlert("خطأ أثناء النشر!"); }
     }
 
     function renderAdminManage() {

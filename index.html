@@ -7,72 +7,68 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --main: #00ffcc; --bg: #050505; --card: #121212; --text: #ffffff; --danger: #ff4444; --star: #ffca08; --gray: #1a1a1a; --core: #ff0055; }
+        :root { --main: #00ffcc; --bg: #050505; --card: rgba(18, 18, 18, 0.85); --text: #ffffff; --danger: #ff4444; --star: #ffca08; --gray: #1a1a1a; --core: #ff0055; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-thumb { background: var(--main); border-radius: 10px; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-        /* --- تصميم كارت الباسورد الجديد (جماليات متطورة) --- */
-        #pass-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .pass-card { background: var(--card); border: 2px solid var(--core); padding: 30px; border-radius: 25px; width: 85%; max-width: 350px; text-align: center; box-shadow: 0 0 40px rgba(255, 0, 85, 0.2); transform: scale(0.8); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        #pass-modal.active { display: flex; }
-        #pass-modal.active .pass-card { transform: scale(1); }
-        .pass-card i { font-size: 40px; color: var(--core); margin-bottom: 15px; display: block; }
-        .pass-card h3 { font-size: 18px; margin-bottom: 20px; color: #fff; }
-        .pass-input-style { width: 100%; background: #000; border: 1px solid #333; padding: 15px; border-radius: 15px; color: var(--core); text-align: center; font-size: 20px; letter-spacing: 4px; outline: none; margin-bottom: 20px; }
-        .pass-input-style:focus { border-color: var(--core); box-shadow: 0 0 10px rgba(255, 0, 85, 0.2); }
-        .pass-btn-group { display: flex; gap: 10px; }
-        .p-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-confirm { background: var(--core); color: #fff; }
-        .btn-cancel { background: #222; color: #eee; }
-        .p-btn:active { transform: scale(0.95); }
-
-        /* --- بقية الـ CSS كما هي دون تغيير --- */
+        /* --- نظام التنبيه المخصص (Custom Alert) --- */
         #custom-alert { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .alert-box { background: var(--card); border: 2px solid var(--main); padding: 30px; border-radius: 25px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 0 30px rgba(0, 255, 204, 0.2); transform: scale(0.7); transition: 0.3s; }
+        .alert-box { background: #121212; border: 2px solid var(--main); padding: 30px; border-radius: 25px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 0 30px rgba(0, 255, 204, 0.2); transform: scale(0.7); transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         #custom-alert.show { display: flex; }
         #custom-alert.show .alert-box { transform: scale(1); }
         .alert-box i { font-size: 45px; color: var(--main); margin-bottom: 15px; display: block; }
         .alert-box p { font-size: 16px; margin-bottom: 20px; line-height: 1.5; font-weight: 700; }
-        .alert-btn { background: var(--main); color: #000; border: none; padding: 12px; border-radius: 15px; font-weight: 900; cursor: pointer; width: 100%; }
+        .alert-btn { background: var(--main); color: #000; border: none; padding: 12px; border-radius: 15px; font-weight: 900; cursor: pointer; width: 100%; transition: 0.2s; }
+        .alert-btn:active { transform: scale(0.95); }
 
-        input[type="text"], input[type="password"], input[type="file"], textarea { width: 100%; padding: 14px 18px; background: rgba(255, 255, 255, 0.03); border: 1px solid #222; border-radius: 14px; color: #fff; font-size: 14px; outline: none; margin-bottom: 12px; display: block; }
-        #user-auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: flex; align-items: center; justify-content: center; }
-        .auth-card { background: var(--card); padding: 30px; border-radius: 30px; border: 1px solid var(--main); width: 90%; max-width: 400px; text-align: center; }
-        .avatar-option { width: 50px; height: 50px; border-radius: 50%; margin: 5px; cursor: pointer; border: 2px solid transparent; opacity: 0.5; }
+        /* --- التنسيق العام للخانات --- */
+        input[type="text"], input[type="password"], input[type="file"], textarea { width: 100%; padding: 14px 18px; background: rgba(255, 255, 255, 0.03); border: 1px solid #222; border-radius: 14px; color: #fff; font-size: 14px; outline: none; transition: 0.3s; margin-bottom: 12px; display: block; }
+        input:focus, textarea:focus { border-color: var(--main); background: rgba(0, 255, 204, 0.05); box-shadow: 0 0 10px rgba(0, 255, 204, 0.1); }
+
+        /* شاشة الدخول */
+        #user-auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: flex; align-items: center; justify-content: center; overflow-y: auto; }
+        .auth-card { background: #121212; padding: 30px; border-radius: 30px; border: 1px solid var(--main); width: 90%; max-width: 400px; text-align: center; }
+        .avatar-option { width: 50px; height: 50px; border-radius: 50%; margin: 5px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; opacity: 0.5; }
         .avatar-option.selected { border-color: var(--main); opacity: 1; transform: scale(1.1); }
+
+        /* الصفحة الرئيسية */
         .container { max-width: 600px; margin: auto; padding: 20px; display: none; }
         header { text-align: center; padding: 20px 0; border-bottom: 1px solid #1a1a1a; margin-bottom: 20px; }
         header h1 { font-size: 28px; font-weight: 900; color: var(--main); text-shadow: 0 0 15px var(--main); cursor: pointer; }
+        
         .search-wrapper { position: relative; margin-bottom: 20px; }
         .search-wrapper i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--main); }
         #app-search { padding-right: 45px; margin-bottom: 0; }
-        .app-card { background: var(--card); border-radius: 25px; padding: 20px; margin-bottom: 15px; border: 1px solid #1a1a1a; }
-        .app-icon-img { width: 60px; height: 60px; border-radius: 15px; object-fit: cover; }
-        .save-btn { background: var(--main); color: #000; width: 100%; padding: 14px; border: none; border-radius: 14px; font-weight: 900; cursor: pointer; }
+
+        /* --- تنسيق كروت الجافا سكريبت المحدث --- */
+        .app-card { background: var(--card); backdrop-filter: blur(10px); border-radius: 30px; padding: 25px; margin-bottom: 20px; border: 1px solid #1a1a1a; transition: 0.4s; display: grid; grid-template-columns: 80px 1fr; grid-template-rows: auto auto auto; gap: 15px; }
+        .app-card:hover { border-color: var(--main); transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0, 255, 204, 0.1); }
+        .app-icon-img { grid-column: 1 / 2; grid-row: 1 / 3; width: 80px; height: 80px; border-radius: 20px; object-fit: cover; }
+        .app-details { grid-column: 2 / 3; grid-row: 1 / 3; display: flex; flex-direction: column; justify-content: space-between; }
+        .app-name { font-size: 20px; font-weight: 700; color: #fff; display: flex; justify-content: space-between; align-items: center; }
+        .app-version { font-size: 11px; color: #555; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 6px; font-weight: 400; }
+        .app-developer { font-size: 13px; color: var(--main); margin-bottom: 3px; }
+        .app-description { font-size: 14px; color: #aaa; grid-column: 1 / 3; grid-row: 3 / 4; margin-top: 5px; line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        
+        .card-btn { grid-column: 1 / 3; grid-row: 4 / 5; margin-top: 10px; }
+        .save-btn { background: var(--main); color: #000; width: 100%; padding: 16px; border: none; border-radius: 18px; font-weight: 900; cursor: pointer; transition: 0.3s; font-size: 15px; }
+        .save-btn:hover { opacity: 0.8; box-shadow: 0 0 15px var(--main); }
+
+        /* المسرح (iframe) */
         #app-theater { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; flex-direction: column; }
         .theater-nav { background: #111; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--main); }
         #app-iframe { flex: 1; border: none; background: #fff; }
+
+        /* لوحة المطور والمحرر */
         #admin-panel { position: fixed; inset: 0; background: #080808; z-index: 4000; display: none; padding: 25px; overflow-y: auto; }
-        .admin-box { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #1a1a1a; margin-bottom: 20px; }
-        #core-editor-wrapper { display: none; }
+        .admin-box { background: #121212; padding: 20px; border-radius: 20px; border: 1px solid #1a1a1a; margin-bottom: 20px; }
+        #core-editor-wrapper { display: none; } /* مخفي افتراضياً */
         #core-code-editor { width: 100%; height: 300px; background: #000; color: #00ff00; font-family: monospace; padding: 15px; border-radius: 10px; border: 1px solid var(--core); direction: ltr; margin-top: 10px; }
     </style>
 </head>
 <body>
-
-<div id="pass-modal">
-    <div class="pass-card">
-        <i class="fas fa-fingerprint"></i>
-        <h3>تحقق من الهوية</h3>
-        <input type="password" id="pass-field" class="pass-input-style" placeholder="••••">
-        <div class="pass-btn-group">
-            <button class="p-btn btn-confirm" onclick="checkThePass()">دخول</button>
-            <button class="p-btn btn-cancel" onclick="hidePassModal()">إلغاء</button>
-        </div>
-    </div>
-</div>
 
 <div id="custom-alert">
     <div class="alert-box">
@@ -107,15 +103,17 @@
     <header>
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <i class="fas fa-cog" onclick="showAlert('قريباً بميزات أكبر...')" style="color:#333; font-size:20px; cursor:pointer;"></i>
-            <h1 onclick="showPassModal('admin')">ELBANNA STORE</h1>
+            <h1 onclick="openAdminGate()">ELBANNA STORE</h1>
             <img id="my-avatar" src="" style="width:35px; height:35px; border-radius:50%; border:1px solid var(--main);">
         </div>
         <p id="my-name" style="font-size:12px; color:var(--main); margin-top:5px;"></p>
     </header>
+
     <div class="search-wrapper">
         <i class="fas fa-search"></i>
         <input type="text" id="app-search" placeholder="ابحث عن تطبيق..." oninput="searchApps()">
     </div>
+
     <div id="apps-list"></div>
 </div>
 
@@ -123,8 +121,7 @@
     <div class="theater-nav">
         <button onclick="closeTheater()" style="background:var(--danger); border:none; color:#fff; width:30px; height:30px; border-radius:50%; font-weight:bold;">×</button>
         <span id="theater-title" style="color:var(--main); font-weight:bold;"></span>
-        <div style="width:30px;"></div>
-    </div>
+        <div style="width: 30px;"></div> </div>
     <iframe id="app-iframe"></iframe>
 </div>
 
@@ -138,75 +135,62 @@
         <h4>نشر تطبيق جديد</h4>
         <input type="text" id="new-app-name" placeholder="اسم التطبيق">
         <input type="text" id="new-app-dev" placeholder="اسم المبرمج">
-        <input type="text" id="new-app-ver" placeholder="رقم الإصدار">
-        <textarea id="new-app-desc" placeholder="وصف التطبيق..."></textarea>
+        <input type="text" id="new-app-ver" placeholder="رقم الإصدار (مثلاً 1.0.0)">
+        <textarea id="new-app-desc" placeholder="وصف التطبيق..." style="height:60px;"></textarea>
         <input type="file" id="new-app-icon-file" accept="image/*">
-        <textarea id="new-app-code" placeholder="الصق كود HTML هنا"></textarea>
-        <button class="save-btn" onclick="publishApp()">حفظ ونشر سحابي 🚀</button>
+        <textarea id="new-app-code" placeholder="الصق كود HTML هنا" style="height:100px;"></textarea>
+        <button id="publish-main-btn" class="save-btn" onclick="publishApp()">حفظ ونشر سحابي 🚀</button>
     </div>
+
     <div class="admin-box" style="border-color: var(--core);">
         <h4 style="color: var(--core);"><i class="fas fa-code"></i> محرر كيان المتجر (أحمد عصام)</h4>
-        <button id="unlock-core-btn" class="save-btn" style="background: #222; border: 1px solid var(--core); color: var(--core); margin-top:10px;" onclick="showPassModal('core')">فتح محرر الكيان 🔓</button>
+        <button id="unlock-core-btn" class="save-btn" style="background: #222; border: 1px solid var(--core); color: var(--core); margin-top:10px;" onclick="unlockCoreEditor()">فتح محرر الكيان 🔓</button>
+        
         <div id="core-editor-wrapper">
             <textarea id="core-code-editor" spellcheck="false"></textarea>
-            <button id="update-core-btn" class="save-btn" style="background: var(--core); color: #fff; margin-top:10px;" onclick="showPassModal('update')">حفظ وتحديث الكيان ⚠️</button>
+            <button id="update-core-btn" class="save-btn" style="background: var(--core); color: #fff; margin-top:10px;" onclick="verifyAndUpdateCore()">حفظ وتحديث الكيان ⚠️</button>
         </div>
     </div>
+
     <button class="save-btn" style="background:#222; color:#fff;" onclick="closeAdmin()">إغلاق</button>
 </div>
 
 <script>
+    const PART_1 = "ghp_W1tlIP3UiSQlNr3b"; 
+    const PART_2 = "4GByHDpDfvdiNg0mx9rO";
+    const GITHUB_TOKEN = PART_1 + PART_2;
+
     const ADMIN_KEY = "mano5112006";
     const CORE_KEY = "ahmedesam5112006"; 
-    const GITHUB_TOKEN = "ghp_W1tlIP3UiSQlNr3b" + "4GByHDpDfvdiNg0mx9rO";
     const GITHUB_USER = "esamelbanna149-sys"; 
     const REPO_NAME = "banna-stable-pro";
     const FILE_PATH = "apps.json";            
 
     let myStore = []; 
-    let activeTask = "";
-
-    // وظيفة التحكم في الكارت الجمالي
-    function showPassModal(task) {
-        activeTask = task;
-        document.getElementById('pass-field').value = "";
-        document.getElementById('pass-modal').classList.add('active');
-        document.getElementById('pass-field').focus();
-    }
-
-    function hidePassModal() {
-        document.getElementById('pass-modal').classList.remove('active');
-    }
-
-    function checkThePass() {
-        const val = document.getElementById('pass-field').value;
-        if (activeTask === 'admin') {
-            if (val === ADMIN_KEY || val === CORE_KEY) {
-                document.getElementById('admin-panel').style.display = 'block';
-                renderAdminManage();
-                hidePassModal();
-            } else { alert("كلمة سر المطور خطأ!"); }
-        } else if (activeTask === 'core') {
-            if (val === CORE_KEY) {
-                document.getElementById('core-editor-wrapper').style.display = 'block';
-                document.getElementById('unlock-core-btn').style.display = 'none';
-                document.getElementById('core-code-editor').value = document.documentElement.outerHTML;
-                hidePassModal();
-            } else { alert("كلمة سر الكيان خطأ!"); }
-        } else if (activeTask === 'update') {
-            if (val === CORE_KEY) {
-                hidePassModal();
-                executeCoreUpdate();
-            } else { alert("كلمة سر التأكيد خطأ!"); }
-        }
-    }
-
-    // بقية الكود الأصلي كما هو تماماً
     let users = JSON.parse(localStorage.getItem('banna_accounts')) || {};
     let activeUser = localStorage.getItem('active_session');
     let currentAuthMode = 'up';
     let tempAvatar = "https://cdn-icons-png.flaticon.com/512/924/924915.png";
     let uploadedIconBase64 = "";
+
+    document.getElementById('new-app-icon-file')?.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 100; canvas.height = 100;
+                    ctx.drawImage(img, 0, 0, 100, 100);
+                    uploadedIconBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
 
     async function loadAppsFromServer() {
         try {
@@ -218,35 +202,78 @@
         } catch (e) { renderApps(); }
     }
 
-    async function executeCoreUpdate() {
-        const newCode = document.getElementById('core-code-editor').value;
-        const btn = document.getElementById('update-core-btn');
-        btn.innerText = "جاري الحفظ... ⏳";
-        try {
-            const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/index.html`;
-            const res = await fetch(url);
-            const data = await res.json();
-            await fetch(url, {
-                method: "PUT",
-                headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
-                body: JSON.stringify({ message: "Core Update", content: btoa(unescape(encodeURIComponent(newCode))), sha: data.sha })
-            });
-            alert("تم تحديث الكيان بنجاح!"); location.reload();
-        } catch (e) { alert("خطأ في الرفع!"); btn.innerText = "حفظ وتحديث الكيان ⚠️"; }
+    function unlockCoreEditor() {
+        const pass = prompt("باسورد الوصول للكيان:");
+        if (pass === CORE_KEY) {
+            document.getElementById('core-editor-wrapper').style.display = 'block';
+            document.getElementById('unlock-core-btn').style.display = 'none';
+            document.getElementById('core-code-editor').value = document.documentElement.outerHTML;
+        } else {
+            alert("عذراً، الباسورد غير صحيح.");
+        }
+    }
+
+    async function verifyAndUpdateCore() {
+        const pass = prompt("تأكيد الباسورد للحفظ (أحمد عصام):");
+        if (pass === CORE_KEY) {
+            const newCode = document.getElementById('core-code-editor').value;
+            const btn = document.getElementById('update-core-btn');
+            btn.innerText = "جاري رفع الكيان... ⏳";
+            try {
+                const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/index.html`;
+                const res = await fetch(url, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
+                const data = await res.json();
+                await fetch(url, {
+                    method: "PUT",
+                    headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: "Core Update", content: btoa(unescape(encodeURIComponent(newCode))), sha: data.sha })
+                });
+                alert("تم التحديث بنجاح!"); location.reload();
+            } catch (e) { alert("فشل التحديث!"); btn.innerText = "حفظ وتحديث الكيان ⚠️"; }
+        }
+    }
+
+    function showAlert(msg) { document.getElementById('alert-text').innerText = msg; document.getElementById('custom-alert').classList.add('show'); }
+    function closeAlert() { document.getElementById('custom-alert').classList.remove('show'); }
+
+    function handleAuth() {
+        const u = document.getElementById('auth-user').value.trim();
+        const p = document.getElementById('auth-pass').value.trim();
+        if(!u || !p) return showAlert("برجاء إكمال البيانات!");
+        if(currentAuthMode === 'up') {
+            users[u] = { pass: p, avatar: tempAvatar };
+            localStorage.setItem('banna_accounts', JSON.stringify(users));
+            login(u);
+        } else {
+            if(users[u] && users[u].pass === p) login(u);
+            else showAlert("بيانات الدخول خاطئة!");
+        }
+    }
+
+    function login(u) {
+        activeUser = u; localStorage.setItem('active_session', u);
+        document.getElementById('user-auth-overlay').style.display = 'none';
+        document.getElementById('main-container').style.display = 'block';
+        document.getElementById('my-name').innerText = "@" + activeUser;
+        document.getElementById('my-avatar').src = users[activeUser].avatar;
+        loadAppsFromServer();
     }
 
     function renderApps(list = myStore) {
         document.getElementById('apps-list').innerHTML = list.map((app, i) => `
             <div class="app-card">
-                <div style="display:flex; gap:15px; align-items:start; margin-bottom:15px;">
-                    <img src="${app.icon || ''}" class="app-icon-img">
-                    <div style="flex:1">
-                        <h3 style="font-size:18px;">${app.name} <span style="font-size:10px; color:#555;">v${app.version || '1.0'}</span></h3>
-                        <p style="font-size:11px; color:var(--main);">بواسطة: ${app.developer}</p>
-                        <p style="font-size:12px; color:#aaa; margin-top:5px;">${app.description || ''}</p>
+                <img src="${app.icon || ''}" class="app-icon-img">
+                <div class="app-details">
+                    <div class="app-name">
+                        ${app.name}
+                        <span class="app-version">v${app.version || '1.0'}</span>
                     </div>
+                    <p class="app-developer">بواسطة: ${app.developer}</p>
                 </div>
-                <button class="save-btn" onclick="openApp(${i})">فتح التطبيق الآن</button>
+                <p class="app-description">${app.description || ''}</p>
+                <div class="card-btn">
+                    <button class="save-btn" onclick="openApp(${i})">فتح التطبيق الآن</button>
+                </div>
             </div>`).join('');
     }
 
@@ -257,20 +284,63 @@
         doc.open(); doc.write(myStore[i].code); doc.close();
     }
     function closeTheater() { document.getElementById('app-theater').style.display = 'none'; }
-    function showAlert(msg) { document.getElementById('alert-text').innerText = msg; document.getElementById('custom-alert').classList.add('show'); }
-    function closeAlert() { document.getElementById('custom-alert').classList.remove('show'); }
-    function handleAuth() {
-        const u = document.getElementById('auth-user').value.trim();
-        const p = document.getElementById('auth-pass').value.trim();
-        if(!u || !p) return;
-        if(currentAuthMode === 'up') { users[u] = { pass: p, avatar: tempAvatar }; localStorage.setItem('banna_accounts', JSON.stringify(users)); login(u); }
-        else { if(users[u] && users[u].pass === p) login(u); else alert("خطأ!"); }
+
+    function openAdminGate() {
+        const p = prompt("كلمة السر:");
+        if(p === ADMIN_KEY || p === CORE_KEY) { 
+            document.getElementById('admin-panel').style.display = 'block';
+            renderAdminManage();
+        }
     }
-    function login(u) { activeUser = u; localStorage.setItem('active_session', u); document.getElementById('user-auth-overlay').style.display = 'none'; document.getElementById('main-container').style.display = 'block'; document.getElementById('my-name').innerText = "@" + activeUser; document.getElementById('my-avatar').src = users[activeUser].avatar; loadAppsFromServer(); }
-    function closeAdmin() { document.getElementById('admin-panel').style.display = 'none'; }
+
+    async function publishApp() {
+        const name = document.getElementById('new-app-name').value;
+        const code = document.getElementById('new-app-code').value;
+        const version = document.getElementById('new-app-ver').value;
+        const description = document.getElementById('new-app-desc').value;
+        
+        myStore.push({ 
+            name, 
+            developer: document.getElementById('new-app-dev').value, 
+            version,
+            description,
+            icon: uploadedIconBase64, 
+            code 
+        });
+        
+        try {
+            const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/${FILE_PATH}`;
+            const res = await fetch(url, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
+            const data = await res.json();
+            await fetch(url, {
+                method: "PUT",
+                headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ message: "Add App", content: btoa(unescape(encodeURIComponent(JSON.stringify(myStore)))), sha: data.sha })
+            });
+            alert("تم النشر!"); loadAppsFromServer(); closeAdmin();
+        } catch (e) { alert("خطأ!"); }
+    }
+
+    function renderAdminManage() {
+        document.getElementById('admin-apps-list').innerHTML = myStore.map((a, i) => `
+            <div style="display:flex; justify-content:space-between; padding:10px; background:#000; border-radius:10px; margin-bottom:5px;">
+                <span>${a.name}</span>
+                <i class="fas fa-trash" style="color:red; cursor:pointer;" onclick="deleteApp(${i})"></i>
+            </div>`).join('');
+    }
+
     function switchAuth(m) { currentAuthMode = m; document.getElementById('reg-avatar-section').style.display = m === 'up' ? 'block' : 'none'; }
     function selectAvatar(el) { document.querySelectorAll('.avatar-option').forEach(img => img.classList.remove('selected')); el.classList.add('selected'); tempAvatar = el.src; }
-    
+    function closeAdmin() { 
+        document.getElementById('admin-panel').style.display = 'none'; 
+        document.getElementById('core-editor-wrapper').style.display = 'none';
+        document.getElementById('unlock-core-btn').style.display = 'block';
+    }
+    function searchApps() {
+        const q = document.getElementById('app-search').value.toLowerCase();
+        renderApps(myStore.filter(a => a.name.toLowerCase().includes(q)));
+    }
+
     window.onload = () => { if(activeUser) login(activeUser); else loadAppsFromServer(); };
 </script>
 </body>

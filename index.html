@@ -1,8 +1,10 @@
-<html lang="ar" dir="rtl"><head>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ELBANNA STORE | Stable Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --main: #00ffcc; --bg: #050505; --card: #121212; --text: #ffffff; --danger: #ff4444; --star: #ffca08; --gray: #1a1a1a; --core: #ff0055; }
@@ -20,6 +22,15 @@
         .alert-box p { font-size: 16px; margin-bottom: 20px; line-height: 1.5; font-weight: 700; }
         .alert-btn { background: var(--main); color: #000; border: none; padding: 12px; border-radius: 15px; font-weight: 900; cursor: pointer; width: 100%; transition: 0.2s; }
         .alert-btn:active { transform: scale(0.95); }
+
+        /* --- نافذة إدخال الباسورد الاحترافية (Pass Modal) --- */
+        #pass-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .pass-card { background: #0f0f0f; border: 1px solid var(--core); padding: 25px; border-radius: 20px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 10px 40px rgba(255, 0, 85, 0.15); }
+        .pass-card h3 { color: var(--core); margin-bottom: 15px; font-size: 18px; }
+        .pass-input { background: #1a1a1a; border: 1px solid #333; color: #fff; width: 100%; padding: 12px; border-radius: 12px; text-align: center; font-size: 18px; letter-spacing: 5px; margin-bottom: 15px; outline: none; }
+        .pass-input:focus { border-color: var(--core); }
+        .pass-actions { display: flex; gap: 10px; }
+        .pass-btn { flex: 1; padding: 10px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; }
 
         /* --- التنسيق العام للخانات --- */
         input[type="text"], input[type="password"], input[type="file"], textarea { width: 100%; padding: 14px 18px; background: rgba(255, 255, 255, 0.03); border: 1px solid #222; border-radius: 14px; color: #fff; font-size: 14px; outline: none; transition: 0.3s; margin-bottom: 12px; display: block; }
@@ -46,21 +57,31 @@
         .save-btn { background: var(--main); color: #000; width: 100%; padding: 14px; border: none; border-radius: 14px; font-weight: 900; cursor: pointer; transition: 0.3s; }
         .save-btn:hover { opacity: 0.8; box-shadow: 0 0 15px var(--main); }
 
-        /* المسرح (iframe) والتقييمات */
+        /* المسرح (iframe) */
         #app-theater { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; flex-direction: column; }
         .theater-nav { background: #111; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--main); }
         #app-iframe { flex: 1; border: none; background: #fff; }
 
-        #review-panel { position: absolute; bottom: 0; left: 0; right: 0; height: 70vh; background: #0a0a0a; border-top: 2px solid var(--main); z-index: 2100; display: none; padding: 20px; overflow-y: auto; }
-        .comment-card { background: #151515; padding: 12px; border-radius: 15px; margin-bottom: 10px; border-right: 3px solid var(--main); position: relative; }
-
         /* لوحة المطور والمحرر */
         #admin-panel { position: fixed; inset: 0; background: #080808; z-index: 4000; display: none; padding: 25px; overflow-y: auto; }
         .admin-box { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #1a1a1a; margin-bottom: 20px; }
+        #core-editor-wrapper { display: none; }
         #core-code-editor { width: 100%; height: 300px; background: #000; color: #00ff00; font-family: monospace; padding: 15px; border-radius: 10px; border: 1px solid var(--core); direction: ltr; margin-top: 10px; }
     </style>
 </head>
 <body>
+
+<div id="pass-modal">
+    <div class="pass-card">
+        <i class="fas fa-user-shield" style="font-size: 30px; color: var(--core); margin-bottom: 10px;"></i>
+        <h3>منطقة مشفرة</h3>
+        <input type="password" id="pass-field" class="pass-input" placeholder="••••••">
+        <div class="pass-actions">
+            <button class="pass-btn" onclick="confirmPass()" style="background: var(--core); color: #fff;">دخول</button>
+            <button class="pass-btn" onclick="closePassModal()" style="background: #222; color: #fff;">إلغاء</button>
+        </div>
+    </div>
+</div>
 
 <div id="custom-alert">
     <div class="alert-box">
@@ -70,14 +91,14 @@
     </div>
 </div>
 
-<div id="user-auth-overlay" style="display: none;">
+<div id="user-auth-overlay">
     <div class="auth-card">
         <h2 style="color:var(--main); margin-bottom:15px;">ELBANNA STORE</h2>
         <div style="display:flex; gap:10px; margin-bottom:20px;">
             <button onclick="switchAuth('up')" id="btn-up" style="flex:1; background:var(--main); padding:10px; border-radius:10px; border:none; font-weight:bold;">تسجيل</button>
             <button onclick="switchAuth('in')" id="btn-in" style="flex:1; background:#222; color:#fff; padding:10px; border-radius:10px; border:none;">دخول</button>
         </div>
-        <div id="reg-avatar-section" style="display: block;">
+        <div id="reg-avatar-section">
             <div class="avatar-selection" style="margin-bottom:15px;">
                 <img src="https://cdn-icons-png.flaticon.com/512/924/924915.png" class="avatar-option selected" onclick="selectAvatar(this)">
                 <img src="https://cdn-icons-png.flaticon.com/512/168/168724.png" class="avatar-option" onclick="selectAvatar(this)">
@@ -91,14 +112,14 @@
     </div>
 </div>
 
-<div class="container" id="main-container" style="display: block;">
+<div class="container" id="main-container">
     <header>
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <i class="fas fa-cog" onclick="showAlert('قريباً بميزات أكبر...')" style="color:#333; font-size:20px; cursor:pointer;"></i>
             <h1 onclick="openAdminGate()">ELBANNA STORE</h1>
-            <img id="my-avatar" src="https://cdn-icons-png.flaticon.com/512/924/924915.png" style="width:35px; height:35px; border-radius:50%; border:1px solid var(--main);">
+            <img id="my-avatar" src="" style="width:35px; height:35px; border-radius:50%; border:1px solid var(--main);">
         </div>
-        <p id="my-name" style="font-size:12px; color:var(--main); margin-top:5px;">@Ahmed Elbanna</p>
+        <p id="my-name" style="font-size:12px; color:var(--main); margin-top:5px;"></p>
     </header>
 
     <div class="search-wrapper">
@@ -106,69 +127,50 @@
         <input type="text" id="app-search" placeholder="ابحث عن تطبيق..." oninput="searchApps()">
     </div>
 
-    <div id="apps-list">
-            <div class="app-card">
-                <div style="display:flex; gap:15px; align-items:start; margin-bottom:15px;">
-                    <img src="data:image/jpeg;base64,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" class="app-icon-img">
-                    <div style="flex:1">
-                        <h3 style="font-size:18px;">البنا الإسلامي</h3>
-                        <p style="font-size:11px; color:var(--main);">بواسطة: Ahmed Elbanna </p>
-                    </div>
-                </div>
-                <button class="save-btn" onclick="openApp(0)">فتح التطبيق الآن</button>
-            </div></div>
+    <div id="apps-list"></div>
 </div>
 
-<div id="app-theater" style="display: none;">
+<div id="app-theater">
     <div class="theater-nav">
         <button onclick="closeTheater()" style="background:var(--danger); border:none; color:#fff; width:30px; height:30px; border-radius:50%; font-weight:bold;">×</button>
-        <span id="theater-title" style="color:var(--main); font-weight:bold;">البنا الإسلامي</span>
-        <button onclick="toggleReviews()" style="background:#222; border:1px solid var(--main); color:var(--main); padding:6px 15px; border-radius:10px; font-size:12px;">التقييمات</button>
+        <span id="theater-title" style="color:var(--main); font-weight:bold;"></span>
+        <div style="width: 30px;"></div>
     </div>
     <iframe id="app-iframe"></iframe>
-    <div id="review-panel">
-        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
-            <h3>الآراء والتقييمات ⭐</h3>
-            <button onclick="toggleReviews()" style="color:#fff; background:none; border:none; font-size:20px;">×</button>
-        </div>
-        <div id="comments-list"></div>
-    </div>
 </div>
 
-<div id="admin-panel" style="display: block;">
+<div id="admin-panel">
     <h2 style="color:var(--main); margin-bottom:20px;">لوحة التحكم</h2>
     <div class="admin-box">
         <h4>إدارة التطبيقات</h4>
-        <div id="admin-apps-list" style="margin-top:10px;">
-            <div style="display:flex; justify-content:space-between; padding:10px; background:#000; border-radius:10px; margin-bottom:5px;">
-                <span>البنا الإسلامي</span>
-                <i class="fas fa-trash" style="color:red; cursor:pointer;" onclick="deleteApp(0)"></i>
-            </div></div>
+        <div id="admin-apps-list" style="margin-top:10px;"></div>
     </div>
     <div class="admin-box">
         <h4>نشر تطبيق جديد</h4>
         <input type="text" id="new-app-name" placeholder="اسم التطبيق">
         <input type="text" id="new-app-dev" placeholder="اسم المبرمج">
+        <input type="text" id="new-app-ver" placeholder="رقم الإصدار (مثلاً 1.0.0)">
+        <textarea id="new-app-desc" placeholder="وصف التطبيق..." style="height:60px;"></textarea>
         <input type="file" id="new-app-icon-file" accept="image/*">
         <textarea id="new-app-code" placeholder="الصق كود HTML هنا" style="height:100px;"></textarea>
         <button id="publish-main-btn" class="save-btn" onclick="publishApp()">حفظ ونشر سحابي 🚀</button>
     </div>
 
     <div class="admin-box" style="border-color: var(--core);">
-        <h4 style="color: var(--core); border-color: var(--core);"><i class="fas fa-code"></i> محرر كيان المتجر (أحمد عصام)</h4>
-        <textarea id="core-code-editor" spellcheck="false"></textarea>
-        <button id="update-core-btn" class="save-btn" style="background: var(--core); color: #fff; margin-top:10px;" onclick="verifyAndUpdateCore()">حفظ وتحديث الكيان ⚠️</button>
+        <h4 style="color: var(--core);"><i class="fas fa-code"></i> محرر كيان المتجر (أحمد عصام)</h4>
+        <button id="unlock-core-btn" class="save-btn" style="background: #222; border: 1px solid var(--core); color: var(--core); margin-top:10px;" onclick="requestPass('core')">فتح محرر الكيان 🔓</button>
+        
+        <div id="core-editor-wrapper">
+            <textarea id="core-code-editor" spellcheck="false"></textarea>
+            <button id="update-core-btn" class="save-btn" style="background: var(--core); color: #fff; margin-top:10px;" onclick="requestPass('update')">حفظ وتحديث الكيان ⚠️</button>
+        </div>
     </div>
 
     <button class="save-btn" style="background:#222; color:#fff;" onclick="closeAdmin()">إغلاق</button>
 </div>
 
 <script>
-    // --- التوكين المقسم (إضافة من الكود 2) ---
-    const PART_1 = "ghp_W1tlIP3UiSQlNr3b"; 
-    const PART_2 = "4GByHDpDfvdiNg0mx9rO";
-    const GITHUB_TOKEN = PART_1 + PART_2;
-
+    const GITHUB_TOKEN = "ghp_W1tlIP3UiSQlNr3b" + "4GByHDpDfvdiNg0mx9rO";
     const ADMIN_KEY = "mano5112006";
     const CORE_KEY = "ahmedesam5112006"; 
     const GITHUB_USER = "esamelbanna149-sys"; 
@@ -176,13 +178,67 @@
     const FILE_PATH = "apps.json";            
 
     let myStore = []; 
+    let currentTask = ""; // لمتابعة العملية الحالية (فتح أو تحديث)
+
+    // دالة لفتح المودال بدلاً من prompt
+    function requestPass(task) {
+        currentTask = task;
+        document.getElementById('pass-modal').style.display = 'flex';
+        document.getElementById('pass-field').value = "";
+        document.getElementById('pass-field').focus();
+    }
+
+    function closePassModal() { document.getElementById('pass-modal').style.display = 'none'; }
+
+    function confirmPass() {
+        const val = document.getElementById('pass-field').value;
+        if (currentTask === 'core') {
+            if (val === CORE_KEY) {
+                document.getElementById('core-editor-wrapper').style.display = 'block';
+                document.getElementById('unlock-core-btn').style.display = 'none';
+                document.getElementById('core-code-editor').value = document.documentElement.outerHTML;
+                closePassModal();
+            } else { alert("خطأ!"); }
+        } else if (currentTask === 'update') {
+            if (val === CORE_KEY) { 
+                closePassModal();
+                executeCoreUpdate(); 
+            } else { alert("خطأ!"); }
+        } else if (currentTask === 'admin') {
+            if (val === ADMIN_KEY || val === CORE_KEY) {
+                document.getElementById('admin-panel').style.display = 'block';
+                renderAdminManage();
+                closePassModal();
+            } else { alert("خطأ!"); }
+        }
+    }
+
+    async function executeCoreUpdate() {
+        const newCode = document.getElementById('core-code-editor').value;
+        const btn = document.getElementById('update-core-btn');
+        btn.innerText = "جاري رفع الكيان... ⏳";
+        try {
+            const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/index.html`;
+            const res = await fetch(url);
+            const data = await res.json();
+            await fetch(url, {
+                method: "PUT",
+                headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ message: "Core Update", content: btoa(unescape(encodeURIComponent(newCode))), sha: data.sha })
+            });
+            alert("تم التحديث!"); location.reload();
+        } catch (e) { alert("فشل!"); btn.innerText = "حفظ وتحديث الكيان ⚠️"; }
+    }
+
+    function openAdminGate() { requestPass('admin'); }
+
+    // --- بقية وظائف الكود كما هي تماماً دون تغيير ---
     let users = JSON.parse(localStorage.getItem('banna_accounts')) || {};
     let activeUser = localStorage.getItem('active_session');
     let currentAuthMode = 'up';
     let tempAvatar = "https://cdn-icons-png.flaticon.com/512/924/924915.png";
     let uploadedIconBase64 = "";
 
-    // معالجة الأيقونات (Base64)
     document.getElementById('new-app-icon-file')?.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
@@ -212,28 +268,6 @@
         } catch (e) { renderApps(); }
     }
 
-    // تحديث الكيان السحابي
-    async function verifyAndUpdateCore() {
-        const pass = prompt("باسورد المدير (أحمد عصام):");
-        if (pass === CORE_KEY) {
-            const newCode = document.getElementById('core-code-editor').value;
-            const btn = document.getElementById('update-core-btn');
-            btn.innerText = "جاري رفع الكيان... ⏳";
-            try {
-                const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/index.html`;
-                const res = await fetch(url, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
-                const data = await res.json();
-                await fetch(url, {
-                    method: "PUT",
-                    headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: "Core Update", content: btoa(unescape(encodeURIComponent(newCode))), sha: data.sha })
-                });
-                alert("تم التحديث بنجاح!"); location.reload();
-            } catch (e) { alert("فشل التحديث!"); }
-        }
-    }
-
-    // جماليات العرض والوظائف الأساسية (الكود 1)
     function showAlert(msg) { document.getElementById('alert-text').innerText = msg; document.getElementById('custom-alert').classList.add('show'); }
     function closeAlert() { document.getElementById('custom-alert').classList.remove('show'); }
 
@@ -266,8 +300,9 @@
                 <div style="display:flex; gap:15px; align-items:start; margin-bottom:15px;">
                     <img src="${app.icon || ''}" class="app-icon-img">
                     <div style="flex:1">
-                        <h3 style="font-size:18px;">${app.name}</h3>
+                        <h3 style="font-size:18px;">${app.name} <span style="font-size:10px; color:#555;">v${app.version || '1.0'}</span></h3>
                         <p style="font-size:11px; color:var(--main);">بواسطة: ${app.developer}</p>
+                        <p style="font-size:12px; color:#aaa; margin-top:5px;">${app.description || ''}</p>
                     </div>
                 </div>
                 <button class="save-btn" onclick="openApp(${i})">فتح التطبيق الآن</button>
@@ -282,19 +317,12 @@
     }
     function closeTheater() { document.getElementById('app-theater').style.display = 'none'; }
 
-    function openAdminGate() {
-        const p = prompt("كلمة السر:");
-        if(p === ADMIN_KEY || p === CORE_KEY) { 
-            document.getElementById('admin-panel').style.display = 'block';
-            document.getElementById('core-code-editor').value = document.documentElement.outerHTML;
-            renderAdminManage();
-        }
-    }
-
     async function publishApp() {
         const name = document.getElementById('new-app-name').value;
         const code = document.getElementById('new-app-code').value;
-        myStore.push({ name, developer: document.getElementById('new-app-dev').value, icon: uploadedIconBase64, code });
+        const version = document.getElementById('new-app-ver').value;
+        const description = document.getElementById('new-app-desc').value;
+        myStore.push({ name, developer: document.getElementById('new-app-dev').value, version, description, icon: uploadedIconBase64, code });
         try {
             const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/${FILE_PATH}`;
             const res = await fetch(url, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
@@ -318,7 +346,11 @@
 
     function switchAuth(m) { currentAuthMode = m; document.getElementById('reg-avatar-section').style.display = m === 'up' ? 'block' : 'none'; }
     function selectAvatar(el) { document.querySelectorAll('.avatar-option').forEach(img => img.classList.remove('selected')); el.classList.add('selected'); tempAvatar = el.src; }
-    function closeAdmin() { document.getElementById('admin-panel').style.display = 'none'; }
+    function closeAdmin() { 
+        document.getElementById('admin-panel').style.display = 'none'; 
+        document.getElementById('core-editor-wrapper').style.display = 'none';
+        document.getElementById('unlock-core-btn').style.display = 'block';
+    }
     function searchApps() {
         const q = document.getElementById('app-search').value.toLowerCase();
         renderApps(myStore.filter(a => a.name.toLowerCase().includes(q)));
@@ -326,7 +358,5 @@
 
     window.onload = () => { if(activeUser) login(activeUser); else loadAppsFromServer(); };
 </script>
-
-
-
-</body></html>
+</body>
+</html>

@@ -1,191 +1,208 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl"><head>
+<html lang="ar" dir="rtl">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ELBANNA STORE | Stable Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&amp;display=swap" rel="stylesheet">
+    <title>ELBANNA STORE | النسخة الكاملة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --main: #00ffcc; --bg: #050505; --card: #121212; --text: #ffffff; --danger: #ff4444; --star: #ffca08; --gray: #1a1a1a; --core: #ff0055; }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-thumb { background: var(--main); border-radius: 10px; }
+        :root { --main: #00ffcc; --bg: #050505; --card: #121212; --text: #ffffff; --core: #ff0055; --star: #ffca08; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; }
+        
+        /* الهيدر */
+        header { text-align: center; padding: 30px 20px; background: linear-gradient(to bottom, #111, var(--bg)); border-bottom: 1px solid #222; }
+        header h1 { font-size: 32px; color: var(--main); text-shadow: 0 0 20px var(--main); cursor: pointer; letter-spacing: 2px; }
+        
+        /* الحاوية */
+        .container { max-width: 600px; margin: auto; padding: 20px; display: none; }
+        
+        /* شكل بطاقة التطبيق (اللي كان ناقص) */
+        .app-card { background: var(--card); border-radius: 25px; padding: 20px; margin-bottom: 20px; border: 1px solid #222; position: relative; transition: 0.3s; }
+        .app-card:hover { transform: translateY(-5px); border-color: var(--main); }
+        .app-info h3 { font-size: 20px; margin-bottom: 5px; color: var(--main); }
+        .stars { color: var(--star); font-size: 14px; margin-bottom: 15px; }
+        
+        .download-btn { background: var(--main); color: #000; border: none; padding: 12px 25px; border-radius: 15px; font-weight: 900; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
-        /* نظام التنبيه المخصص */
-        #custom-alert { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .alert-box { background: var(--card); border: 2px solid var(--main); padding: 30px; border-radius: 25px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 0 30px rgba(0, 255, 204, 0.2); }
-        #custom-alert.show { display: flex; }
-        .alert-btn { background: var(--main); color: #000; border: none; padding: 12px; border-radius: 15px; font-weight: 900; cursor: pointer; width: 100%; }
-
-        /* الخانات والتنسيق */
-        input, textarea { width: 100%; padding: 14px; background: rgba(255, 255, 255, 0.03); border: 1px solid #222; border-radius: 14px; color: #fff; margin-bottom: 12px; outline: none; }
-        .save-btn { background: var(--main); color: #000; width: 100%; padding: 14px; border: none; border-radius: 14px; font-weight: 900; cursor: pointer; transition: 0.3s; }
+        /* لوحة التحكم والمحرر */
+        #admin-panel { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; padding: 20px; overflow-y: auto; }
+        .admin-box { background: var(--card); padding: 20px; border-radius: 20px; margin-bottom: 20px; border: 1px solid #333; }
+        h4 { margin-bottom: 15px; color: var(--main); border-right: 4px solid var(--main); padding-right: 10px; }
+        
+        #core-code-editor { width: 100%; height: 300px; background: #000; color: #00ff00; font-family: monospace; padding: 15px; border-radius: 10px; border: 1px solid var(--core); direction: ltr; margin-top: 10px; }
+        
+        input, textarea { width: 100%; padding: 14px; margin-bottom: 12px; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 12px; outline: none; }
+        .save-btn { background: var(--main); color: #000; border: none; padding: 15px; border-radius: 15px; width: 100%; font-weight: 900; cursor: pointer; transition: 0.3s; }
+        .save-btn:active { transform: scale(0.95); }
 
         /* شاشة الدخول */
-        #user-auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: flex; align-items: center; justify-content: center; }
-        .auth-card { background: var(--card); padding: 30px; border-radius: 30px; border: 1px solid var(--main); width: 90%; max-width: 400px; text-align: center; }
-
-        /* الصفحة الرئيسية */
-        .container { max-width: 600px; margin: auto; padding: 20px; display: none; }
-        header { text-align: center; padding: 20px 0; border-bottom: 1px solid #1a1a1a; margin-bottom: 20px; }
-        header h1 { font-size: 28px; font-weight: 900; color: var(--main); text-shadow: 0 0 15px var(--main); cursor: pointer; }
-
-        .app-card { background: var(--card); border-radius: 25px; padding: 20px; margin-bottom: 15px; border: 1px solid #1a1a1a; transition: 0.3s; }
-        
-        /* لوحة التحكم */
-        #admin-panel { position: fixed; inset: 0; background: #080808; z-index: 4000; display: none; padding: 25px; overflow-y: auto; }
-        .admin-box { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #1a1a1a; margin-bottom: 20px; }
+        #user-auth-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 6000; display: flex; align-items: center; justify-content: center; }
+        .auth-box { background: var(--card); padding: 35px; border-radius: 30px; border: 1px solid var(--main); text-align: center; width: 90%; max-width: 380px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 
-<div id="custom-alert">
-    <div class="alert-box">
-        <i class="fas fa-bell" style="font-size: 45px; color: var(--main); margin-bottom: 15px; display: block;"></i>
-        <p id="alert-text">رسالة النظام</p>
-        <button class="alert-btn" onclick="closeAlert()">حسناً</button>
-    </div>
-</div>
-
-<div id="user-auth-overlay" style="display: none;">
-    <div class="auth-card">
+<div id="user-auth-overlay">
+    <div class="auth-box">
+        <i class="fas fa-rocket" style="font-size: 50px; color: var(--main); margin-bottom: 20px;"></i>
         <h2 style="color:var(--main); margin-bottom:20px;">ELBANNA STORE</h2>
-        <input type="text" id="auth-user" placeholder="اسم المستخدم">
-        <input type="password" id="auth-pass" placeholder="كلمة السر">
-        <button class="save-btn" onclick="handleAuth()">دخول 🚀</button>
+        <input type="text" id="auth-user" placeholder="اكتب اسمك يا بطل">
+        <button class="save-btn" onclick="handleAuth()">دخول للمتجر 🚀</button>
     </div>
 </div>
 
-<div class="container" id="main-container" style="display: block;">
+<div class="container" id="main-container">
     <header>
         <h1 onclick="openAdminGate()">ELBANNA STORE</h1>
-        <p id="my-name" style="font-size:12px; color:var(--main); margin-top:5px;">@Ahmed Elbanna </p>
+        <p id="user-display" style="color: #666; font-size: 14px; margin-top: 5px;"></p>
     </header>
-    <div id="apps-list"></div>
+    <div id="apps-list">
+        </div>
 </div>
 
-<div id="admin-panel" style="display: block;">
-    <h2 style="color:var(--main); margin-bottom:20px;">لوحة التحكم</h2>
+<div id="admin-panel">
+    <h2 style="color:var(--main); margin-bottom:20px;"><i class="fas fa-user-shield"></i> لوحة المدير العام</h2>
     
     <div class="admin-box">
-        <h4>نشر تطبيق جديد (المطور)</h4>
+        <h4><i class="fas fa-plus"></i> إضافة تطبيق جديد</h4>
         <input type="text" id="new-app-name" placeholder="اسم التطبيق">
-        <textarea id="new-app-code" placeholder="كود HTML/JS" style="height:100px;"></textarea>
-        <button class="save-btn" onclick="publishApp()">نشر سحابي 🚀</button>
+        <input type="text" id="new-app-icon" placeholder="رابط أيقونة التطبيق (اختياري)">
+        <textarea id="new-app-code" placeholder="كود التطبيق أو رابط التحميل" style="height: 80px;"></textarea>
+        <button class="save-btn" onclick="publishApp()">نشر في المتجر 📡</button>
     </div>
 
     <div class="admin-box" style="border-color: var(--core);">
-        <h4 style="color: var(--core);">تحديث كيان المتجر (أحمد عصام)</h4>
-        <button id="update-core-btn" class="save-btn" style="background: var(--core); color: #fff;" onclick="verifyAndUpdateCore()">جاري التحديث... ⏳</button>
+        <h4 style="color: var(--core); border-color: var(--core);"><i class="fas fa-code"></i> محرر كيان المتجر (أحمد عصام)</h4>
+        <p style="font-size: 12px; color: #888; margin-bottom: 10px;">عدل كود الـ HTML هنا واحفظ، المتجر هيتغير عند الكل فوراً.</p>
+        <textarea id="core-code-editor" spellcheck="false"></textarea>
+        <button id="update-core-btn" class="save-btn" style="background: var(--core); color: #fff; margin-top:10px;" onclick="verifyAndUpdateCore()">حفظ وتحديث الكيان ⚠️</button>
     </div>
 
-    <button class="save-btn" style="background:#222; color:#fff;" onclick="closeAdmin()">إغلاق</button>
+    <button class="save-btn" style="background:#222; color:#fff;" onclick="closeAdmin()">إغلاق اللوحة</button>
 </div>
 
 <script>
-    // --- إعدادات السحابة (أحمد عصام) ---
+    // الإعدادات السحابية
     const PART_1 = "ghp_W1tlIP3UiSQlNr3b"; 
     const PART_2 = "4GByHDpDfvdiNg0mx9rO";
     const MY_KEY = PART_1 + PART_2;
-
     const ADMIN_KEY = "mano5112006"; 
     const CORE_KEY = "ahmedesam5112006"; 
-
     const GITHUB_USER = "esamelbanna149-sys"; 
-    const REPO_NAME = "banna-stable-pro"; 
-    const FILE_PATH = "apps.json";
+    const REPO_NAME = "banna-stable-pro";
 
     let myStore = [];
 
-    // تحديث الكيان (الكود الأساسي)
-    async function verifyAndUpdateCore() {
-        const pass = prompt("أدخل كلمة سر المدير العام للتحديث:");
-        if (pass === CORE_KEY) {
-            if (confirm("هل تريد رفع الكود الحالي كنسخة أساسية؟")) {
-                await updateStoreSourceCode();
-            }
-        } else { alert("خطأ في الصلاحية!"); }
-    }
-
-    async function updateStoreSourceCode() {
-        const btn = document.getElementById('update-core-btn');
-        btn.innerText = "جاري التحديث... ⏳";
-        const fullCode = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-        try {
-            const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/index.html`;
-            const res = await fetch(url, { headers: { "Authorization": `token ${MY_KEY}` } });
-            const data = await res.json();
-            await fetch(url, {
-                method: "PUT",
-                headers: { "Authorization": `token ${MY_KEY}`, "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    message: "Core Update by Ahmed Esam",
-                    content: btoa(unescape(encodeURIComponent(fullCode))),
-                    sha: data.sha
-                })
-            });
-            alert("تم تحديث كيان المتجر بنجاح! 🚀");
-        } catch (e) { alert("فشل التحديث!"); }
-        btn.innerText = "تحديث كود المتجر بالكامل ⚠️";
-    }
-
-    // وظائف المتجر
-    function openAdminGate() {
-        const p = prompt("كلمة سر اللوحة:");
-        if (p === ADMIN_KEY || p === CORE_KEY) document.getElementById('admin-panel').style.display='block';
-    }
-    function closeAdmin() { document.getElementById('admin-panel').style.display='none'; }
-    function closeAlert() { document.getElementById('custom-alert').classList.remove('show'); }
+    // وظيفة الدخول
     function handleAuth() {
-        const u = document.getElementById('auth-user').value;
-        if(u) {
-            document.getElementById('user-auth-overlay').style.display='none';
-            document.getElementById('main-container').style.display='block';
-            document.getElementById('my-name').innerText = "@" + u;
+        const user = document.getElementById('auth-user').value;
+        if(user) {
+            document.getElementById('user-auth-overlay').style.display = 'none';
+            document.getElementById('main-container').style.display = 'block';
+            document.getElementById('user-display').innerText = "مرحباً بك: " + user;
             loadApps();
         }
     }
 
+    // فتح اللوحة السرية
+    function openAdminGate() {
+        const p = prompt("كلمة سر اللوحة:");
+        if (p === ADMIN_KEY || p === CORE_KEY) {
+            document.getElementById('admin-panel').style.display = 'block';
+            document.getElementById('core-code-editor').value = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+        }
+    }
+
+    function closeAdmin() { document.getElementById('admin-panel').style.display = 'none'; }
+
+    // تحميل التطبيقات من المخزن
     async function loadApps() {
         try {
-            const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/${FILE_PATH}`);
+            const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/apps.json`);
             const data = await res.json();
             myStore = JSON.parse(decodeURIComponent(escape(atob(data.content))));
             renderApps();
-        } catch (e) { console.log("المخزن فارغ"); }
+        } catch (e) { console.log("المخزن جديد"); }
     }
 
     function renderApps() {
-        document.getElementById('apps-list').innerHTML = myStore.map(app => `
+        document.getElementById('apps-list').innerHTML = myStore.map((app, index) => `
             <div class="app-card">
-                <h3>${app.name}</h3>
-                <button class="save-btn" style="margin-top:10px;">فتح التطبيق</button>
-            </div>`).join('');
+                <div class="app-info">
+                    <h3>${app.name}</h3>
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <span style="color:#666; margin-right:10px;">(5.0)</span>
+                    </div>
+                </div>
+                <button class="download-btn" onclick="alert('جاري تشغيل: ${app.name}')">
+                    <i class="fas fa-download"></i> تحميل / فتح
+                </button>
+            </div>
+        `).join('');
     }
 
+    // نشر تطبيق جديد
     async function publishApp() {
         const name = document.getElementById('new-app-name').value;
         const code = document.getElementById('new-app-code').value;
-        if(!name || !code) return;
+        if(!name || !code) return alert("اكمل البيانات!");
+
         myStore.push({name, code});
+        const btn = event.target;
+        btn.innerText = "جاري النشر... ⏳";
+
         try {
-            const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/${FILE_PATH}`;
+            const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/apps.json`;
             const res = await fetch(url, { headers: { "Authorization": `token ${MY_KEY}` } });
             const data = await res.json();
+
             await fetch(url, {
                 method: "PUT",
                 headers: { "Authorization": `token ${MY_KEY}`, "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    message: "Add New App",
+                    message: "New App Added",
                     content: btoa(unescape(encodeURIComponent(JSON.stringify(myStore)))),
                     sha: data.sha
                 })
             });
-            alert("تم النشر!"); renderApps();
-        } catch (e) { alert("خطأ في النشر!"); }
+            alert("تم النشر بنجاح!");
+            renderApps();
+            closeAdmin();
+        } catch (e) { alert("خطأ!"); }
+        btn.innerText = "نشر في المتجر 📡";
+    }
+
+    // تحديث كيان المتجر (المحرر)
+    async function verifyAndUpdateCore() {
+        const pass = prompt("باسورد المدير (أحمد عصام):");
+        if (pass === CORE_KEY) {
+            const newCode = document.getElementById('core-code-editor').value;
+            const btn = document.getElementById('update-core-btn');
+            btn.innerText = "جاري رفع الكيان الجديد... 🚀";
+            
+            try {
+                const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/index.html`;
+                const res = await fetch(url, { headers: { "Authorization": `token ${MY_KEY}` } });
+                const data = await res.json();
+
+                await fetch(url, {
+                    method: "PUT",
+                    headers: { "Authorization": `token ${MY_KEY}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        message: "Store Core Updated by Ahmed",
+                        content: btoa(unescape(encodeURIComponent(newCode))),
+                        sha: data.sha
+                    })
+                });
+                alert("مبروك يا مدير! الكيان اتحدث.");
+                location.reload();
+            } catch (e) { alert("خطأ في السحاب!"); }
+            btn.innerText = "حفظ وتحديث الكيان ⚠️";
+        }
     }
 </script>
-
-
-</body></html>
+</body>
+</html>

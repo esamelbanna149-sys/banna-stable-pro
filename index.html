@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
+<html lang="ar" dir="rtl"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ELBANNA STORE | Stable Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --main: #00ffcc; --bg: #050505; --card: #121212; --text: #ffffff; --danger: #ff4444; --star: #ffca08; --gray: #1a1a1a; --core: #ff0055; }
@@ -49,7 +48,7 @@
     </div>
 </div>
 
-<div id="user-auth-overlay">
+<div id="user-auth-overlay" style="display: none;">
     <div class="auth-card">
         <h2 style="color:var(--main); margin-bottom:20px;">ELBANNA STORE</h2>
         <input type="text" id="auth-user" placeholder="اسم المستخدم">
@@ -58,15 +57,15 @@
     </div>
 </div>
 
-<div class="container" id="main-container">
+<div class="container" id="main-container" style="display: block;">
     <header>
         <h1 onclick="openAdminGate()">ELBANNA STORE</h1>
-        <p id="my-name" style="font-size:12px; color:var(--main); margin-top:5px;"></p>
+        <p id="my-name" style="font-size:12px; color:var(--main); margin-top:5px;">@Ahmed Elbanna </p>
     </header>
     <div id="apps-list"></div>
 </div>
 
-<div id="admin-panel">
+<div id="admin-panel" style="display: block;">
     <h2 style="color:var(--main); margin-bottom:20px;">لوحة التحكم</h2>
     
     <div class="admin-box">
@@ -78,7 +77,7 @@
 
     <div class="admin-box" style="border-color: var(--core);">
         <h4 style="color: var(--core);">تحديث كيان المتجر (أحمد عصام)</h4>
-        <button id="update-core-btn" class="save-btn" style="background: var(--core); color: #fff;" onclick="verifyAndUpdateCore()">تحديث كود المتجر بالكامل ⚠️</button>
+        <button id="update-core-btn" class="save-btn" style="background: var(--core); color: #fff;" onclick="verifyAndUpdateCore()">جاري التحديث... ⏳</button>
     </div>
 
     <button class="save-btn" style="background:#222; color:#fff;" onclick="closeAdmin()">إغلاق</button>
@@ -187,5 +186,6 @@
         } catch (e) { alert("خطأ في النشر!"); }
     }
 </script>
-</body>
-</html>
+
+
+</body></html>

@@ -77,7 +77,7 @@
             <button onclick="switchAuth('up')" id="btn-up" style="flex:1; background:var(--main); padding:10px; border-radius:10px; border:none; font-weight:bold;">تسجيل</button>
             <button onclick="switchAuth('in')" id="btn-in" style="flex:1; background:#222; color:#fff; padding:10px; border-radius:10px; border:none;">دخول</button>
         </div>
-        <div id="reg-avatar-section">
+        <div id="reg-avatar-section" style="display: block;">
             <div class="avatar-selection" style="margin-bottom:15px;">
                 <img src="https://cdn-icons-png.flaticon.com/512/924/924915.png" class="avatar-option selected" onclick="selectAvatar(this)">
                 <img src="https://cdn-icons-png.flaticon.com/512/168/168724.png" class="avatar-option" onclick="selectAvatar(this)">
@@ -98,7 +98,7 @@
             <h1 onclick="openAdminGate()">ELBANNA STORE</h1>
             <img id="my-avatar" src="https://cdn-icons-png.flaticon.com/512/924/924915.png" style="width:35px; height:35px; border-radius:50%; border:1px solid var(--main);">
         </div>
-        <p id="my-name" style="font-size:12px; color:var(--main); margin-top:5px;">@Ahmed</p>
+        <p id="my-name" style="font-size:12px; color:var(--main); margin-top:5px;">@Ahmed Elbanna</p>
     </header>
 
     <div class="search-wrapper">
@@ -139,7 +139,11 @@
     <h2 style="color:var(--main); margin-bottom:20px;">لوحة التحكم</h2>
     <div class="admin-box">
         <h4>إدارة التطبيقات</h4>
-        <div id="admin-apps-list" style="margin-top:10px;"></div>
+        <div id="admin-apps-list" style="margin-top:10px;">
+            <div style="display:flex; justify-content:space-between; padding:10px; background:#000; border-radius:10px; margin-bottom:5px;">
+                <span>البنا الإسلامي</span>
+                <i class="fas fa-trash" style="color:red; cursor:pointer;" onclick="deleteApp(0)"></i>
+            </div></div>
     </div>
     <div class="admin-box">
         <h4>نشر تطبيق جديد</h4>
@@ -322,6 +326,7 @@
 
     window.onload = () => { if(activeUser) login(activeUser); else loadAppsFromServer(); };
 </script>
+
 
 
 </body></html>

@@ -13,7 +13,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-        /* --- نظام التنبيه المخصص المطور --- */
         #custom-alert { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         .alert-box { background: linear-gradient(145deg, #121212, #0a0a0a); border: 2px solid var(--main); padding: 30px; border-radius: 25px; width: 85%; max-width: 340px; text-align: center; box-shadow: 0 0 40px rgba(0, 255, 204, 0.15); transform: scale(0.8); opacity: 0; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         #custom-alert.show { display: flex; }
@@ -25,7 +24,6 @@
         .alert-btn { background: var(--main); color: #000; border: none; padding: 12px; border-radius: 15px; font-weight: 900; cursor: pointer; width: 100%; transition: 0.2s; }
         .alert-btn.cancel { background: #222; color: #fff; display: none; }
 
-        /* --- شاشة محرر الكيان --- */
         #core-editor-overlay { position: fixed; inset: 0; background: #000; z-index: 6000; display: none; flex-direction: column; padding: 15px; }
         .core-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid var(--core); }
         #core-code-editor { flex: 1; width: 100%; background: #080808; color: #00ff00; font-family: 'Courier New', monospace; padding: 15px; border: none; outline: none; resize: none; font-size: 13px; line-height: 1.6; margin: 15px 0; border-radius: 10px; }
@@ -56,7 +54,6 @@
         #admin-panel { position: fixed; inset: 0; background: #080808; z-index: 4000; display: none; padding: 25px; overflow-y: auto; }
         .admin-box { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #1a1a1a; margin-bottom: 20px; }
 
-        /* --- استايل الصفحة الجانبية الجديدة --- */
         #contact-sidebar { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--card); z-index: 7000; transition: 0.4s ease-in-out; border-left: 2px solid var(--main); padding: 30px 20px; box-shadow: -10px 0 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; }
         #sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; z-index: 6999; backdrop-filter: blur(5px); }
         .contact-link { text-decoration: none; color: #fff; background: #1a1a1a; padding: 15px; border-radius: 15px; display: flex; align-items: center; gap: 12px; border: 1px solid #333; margin-bottom: 12px; transition: 0.3s; font-size: 14px; font-weight: bold; }
@@ -88,14 +85,7 @@
         <span>فيسبوك</span>
     </a>
 
-    <div style="height: 20px;"></div>
-    <p style="font-size: 12px; color: #777; margin-bottom: 10px; margin-right: 5px;">إعدادات الحساب:</p>
-    <button class="logout-btn" onclick="logoutUser()">
-        <i class="fas fa-sign-out-alt"></i>
-        <span>مسح البيانات والخروج</span>
-    </button>
-    
-    <div style="margin-top: 30px; text-align: center; opacity: 0.5; font-size: 11px; padding-bottom: 20px;">
+    <div style="margin-top: auto; text-align: center; opacity: 0.5; font-size: 11px; padding-bottom: 20px;">
         <p>ELBANNA STORE v2.0</p>
     </div>
 </div>
@@ -205,7 +195,7 @@
     let myStore = []; 
     let users = JSON.parse(localStorage.getItem('banna_accounts')) || {};
     let activeUser = localStorage.getItem('active_session');
-    let currentAuthMode = 'up'; // سيبقى دائماً على وضع التسجيل
+    let currentAuthMode = 'up';
     let tempAvatar = "https://cdn-icons-png.flaticon.com/512/924/924915.png";
     let uploadedIconBase64 = "";
 
@@ -281,6 +271,7 @@
             }
         });
     }
+
     function closeCoreEditor() { document.getElementById('core-editor-overlay').style.display = 'none'; }
 
     async function deleteApp(index) {
@@ -386,8 +377,6 @@
         const u = document.getElementById('auth-user').value.trim();
         const p = document.getElementById('auth-pass').value.trim();
         if(!u || !p) return showAlert("أدخل البيانات!");
-        
-        // بما أن الدخول تم حذفه، سنقوم دائماً بإنشاء حساب أو تحديثه عند الضغط على انطلاق
         users[u] = { pass: p, avatar: tempAvatar };
         localStorage.setItem('banna_accounts', JSON.stringify(users));
         login(u);
@@ -421,16 +410,14 @@
         const theater = document.getElementById('app-theater');
         const iframe = document.getElementById('app-iframe');
         const title = document.getElementById('theater-title');
-        
         theater.style.display = 'flex';
         title.innerText = myStore[i].name;
-
         const newIframe = iframe.cloneNode();
         iframe.parentNode.replaceChild(newIframe, iframe);
-        
+        const code = myStore[i].code;
         const doc = newIframe.contentWindow.document;
         doc.open();
-        doc.write(myStore[i].code);
+        doc.write(code);
         doc.close();
     }
 
@@ -438,13 +425,72 @@
 
     function renderAdminManage() {
         document.getElementById('admin-apps-list').innerHTML = myStore.map((a, i) => `
-            <div style="display:flex; justify-content:space-between; padding:10px; background:#000; border-radius:10px; margin-bottom:5px;">
-                <span>${a.name}</span>
-                <i class="fas fa-trash" style="color:red; cursor:pointer;" onclick="deleteApp(${i})"></i>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#000;border-radius:12px;margin-bottom:8px;">
+                <div style="display:flex;align-items:center;gap:10px;overflow:hidden;">
+                    <img src="${a.icon||''}" style="width:40px;height:40px;border-radius:10px;object-fit:cover;border:1px solid #333;flex-shrink:0;">
+                    <span style="font-size:14px;">${a.name}</span>
+                </div>
+                <div style="display:flex;gap:12px;flex-shrink:0;">
+                    <i class="fas fa-edit" style="color:var(--main);cursor:pointer;font-size:17px;" onclick="openEditApp(${i})"></i>
+                    <i class="fas fa-trash" style="color:#ff4444;cursor:pointer;font-size:17px;" onclick="deleteApp(${i})"></i>
+                </div>
             </div>`).join('');
     }
 
-    // تم تعطيل التبديل لكن الوظيفة موجودة للحفاظ على استقرار الكود
+    let editIconBase64 = "";
+    let currentEditIndex = -1;
+
+    function openEditApp(i) {
+        currentEditIndex = i; editIconBase64 = "";
+        const app = myStore[i];
+        document.getElementById('edit-app-desc').value = app.description || "";
+        const prev = document.getElementById('edit-icon-preview');
+        prev.src = app.icon || ""; prev.style.display = app.icon ? 'block' : 'none';
+        document.getElementById('edit-app-icon-file').value = "";
+        document.getElementById('edit-app-overlay').style.display = 'flex';
+    }
+
+    function closeEditApp() {
+        document.getElementById('edit-app-overlay').style.display = 'none';
+        currentEditIndex = -1; editIconBase64 = "";
+    }
+
+    async function saveAppEdit() {
+        if (currentEditIndex < 0) return;
+        myStore[currentEditIndex].description = document.getElementById('edit-app-desc').value.trim();
+        if (editIconBase64) myStore[currentEditIndex].icon = editIconBase64;
+        try {
+            const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/${FILE_PATH}`;
+            const res = await fetch(url, { headers: {"Authorization":`token ${GITHUB_TOKEN}`} });
+            const data = await res.json();
+            await fetch(url, { method:"PUT",
+                headers: {"Authorization":`token ${GITHUB_TOKEN}`,"Content-Type":"application/json"},
+                body: JSON.stringify({message:"Edit App", content:btoa(unescape(encodeURIComponent(JSON.stringify(myStore)))), sha:data.sha})
+            });
+            renderApps(); renderAdminManage(); closeEditApp();
+            showAlert("تم حفظ التعديلات بنجاح! ✅");
+        } catch(e) { showAlert("فشل الحفظ السحابي! ❌"); }
+    }
+
+    document.addEventListener('change', function(e) {
+        if (e.target.id !== 'edit-app-icon-file') return;
+        const file = e.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                canvas.width = 100; canvas.height = 100;
+                canvas.getContext('2d').drawImage(img,0,0,100,100);
+                editIconBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                document.getElementById('edit-icon-preview').src = editIconBase64;
+                document.getElementById('edit-icon-preview').style.display = 'block';
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
     function switchAuth(m) { /* لا يفعل شيء حالياً */ }
     
     function selectAvatar(el) { document.querySelectorAll('.avatar-option').forEach(img => img.classList.remove('selected')); el.classList.add('selected'); tempAvatar = el.src; }
@@ -456,5 +502,26 @@
 
     window.onload = () => { if(activeUser) login(activeUser); else loadAppsFromServer(); };
 </script>
+
+<!-- نافذة تعديل التطبيق -->
+<div id="edit-app-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:8000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px);">
+    <div style="background:var(--card);border:1px solid var(--main);border-radius:25px;padding:25px;width:90%;max-width:400px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <h3 style="color:var(--main);font-size:17px;"><i class="fas fa-edit"></i> تعديل التطبيق</h3>
+            <i class="fas fa-times" onclick="closeEditApp()" style="cursor:pointer;color:#aaa;font-size:20px;"></i>
+        </div>
+        <div style="text-align:center;margin-bottom:12px;">
+            <img id="edit-icon-preview" src="" style="width:80px;height:80px;border-radius:18px;object-fit:cover;border:2px solid var(--main);display:none;margin-bottom:8px;">
+        </div>
+        <p style="font-size:12px;color:#777;margin-bottom:6px;">تغيير صورة التطبيق:</p>
+        <input type="file" id="edit-app-icon-file" accept="image/*">
+        <p style="font-size:12px;color:#777;margin-bottom:6px;margin-top:4px;">وصف التطبيق:</p>
+        <textarea id="edit-app-desc" placeholder="أدخل وصف التطبيق..." style="height:90px;resize:none;"></textarea>
+        <div style="display:flex;gap:10px;margin-top:5px;">
+            <button class="save-btn" onclick="saveAppEdit()"><i class="fas fa-save"></i> حفظ سحابي</button>
+            <button class="save-btn" style="background:#222;color:#fff;width:80px;" onclick="closeEditApp()">إلغاء</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

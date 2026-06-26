@@ -95,6 +95,18 @@
         <span>إعدادات الحساب</span>
     </a>
 
+    <!-- زر الإدارة المخفي -->
+    <a href="javascript:void(0)" id="admin-sidebar-btn" onclick="openAdminGate()" class="contact-link" style="display:none; border-color: var(--core);">
+        <i class="fas fa-shield-alt" style="color: var(--core); font-size: 20px;"></i>
+        <span style="color: var(--core);">لوحة الإدارة</span>
+    </a>
+
+    <!-- زر مسح البيانات ظاهر دائماً -->
+    <a href="javascript:void(0)" id="clear-data-sidebar-btn" onclick="clearAllData()" class="contact-link" style="border-color: var(--danger);">
+        <i class="fas fa-trash-alt" style="color: var(--danger); font-size: 20px;"></i>
+        <span style="color: var(--danger);">مسح البيانات</span>
+    </a>
+
     <p style="font-size: 12px; color: #777; margin-bottom: 10px; margin-right: 5px; margin-top: 25px;">لمحة عن المبرمج:</p>
     <div style="background:#1a1a1a; border:1px solid #333; border-radius:15px; padding:15px; margin-bottom:10px;">
         <h4 style="color:var(--main); font-size:15px; margin-bottom:8px; text-align:right; text-shadow:0 0 8px var(--main);">Ahmed Elbanna</h4>
@@ -159,7 +171,10 @@
             <input type="file" id="reg-avatar-file" accept="image/*">
         </div>
         <input type="text" id="auth-user" placeholder="اسم المستخدم">
-        <input type="password" id="auth-pass" placeholder="كلمة السر">
+        <div class="pass-wrapper">
+            <input type="password" id="auth-pass" placeholder="كلمة السر">
+            <i class="fas fa-eye toggle-eye" onclick="togglePasswordVisibility('auth-pass', this)"></i>
+        </div>
         <button class="save-btn" onclick="handleAuth()">انطلاق 🚀</button>
     </div>
 </div>
@@ -168,7 +183,7 @@
     <header>
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <i class="fas fa-cog" onclick="toggleSidebar()" style="color:var(--main); font-size:22px; cursor:pointer; text-shadow: 0 0 10px var(--main);"></i>
-            <h1 onclick="openAdminGate()">ELBANNA STORE</h1>
+            <h1 id="store-title" onclick="handleTitleClick()">ELBANNA STORE</h1>
             <img id="my-avatar" src="" onclick="showAvatarPreview()" style="width:35px; height:35px; border-radius:50%; border:1px solid var(--main); cursor:pointer;">
         </div>
         <p id="my-name" style="font-size:12px; color:var(--main); margin-top:5px;"></p>
@@ -236,6 +251,7 @@
         if (sidebar.style.right === '0px') {
             sidebar.style.right = '-300px';
             overlay.style.display = 'none';
+            document.getElementById('admin-sidebar-btn').style.display = 'none';
         } else {
             sidebar.style.right = '0px';
             overlay.style.display = 'block';
@@ -307,7 +323,10 @@
     function openAdminGate() {
         showAlert("أدخل كلمة مرور الإدارة للدخول", true, (pass) => {
             if(pass === ADMIN_KEY || pass === CORE_KEY) { 
-                clearPublishForm(); 
+                clearPublishForm();
+                document.getElementById('contact-sidebar').style.right = '-300px';
+                document.getElementById('sidebar-overlay').style.display = 'none';
+                document.getElementById('admin-sidebar-btn').style.display = 'none';
                 document.getElementById('admin-panel').style.display = 'block';
                 renderAdminManage();
             } else {
@@ -644,6 +663,30 @@
     }
     
     function selectAvatar(el) { document.querySelectorAll('.avatar-option').forEach(img => img.classList.remove('selected')); el.classList.add('selected'); tempAvatar = el.src; }
+
+    // --- عداد النقرات على العنوان ---
+    let titleClickCount = 0;
+    let titleClickTimer = null;
+    function handleTitleClick() {
+        titleClickCount++;
+        clearTimeout(titleClickTimer);
+        if (titleClickCount >= 5) {
+            titleClickCount = 0;
+            document.getElementById('admin-sidebar-btn').style.display = 'flex';
+            toggleSidebar();
+        } else {
+            titleClickTimer = setTimeout(() => { titleClickCount = 0; }, 2000);
+        }
+    }
+
+    // --- مسح البيانات ---
+    function clearAllData() {
+        showAlert("⚠️ هل أنت متأكد من مسح جميع البيانات المحلية؟ لا يمكن التراجع!", false, () => {
+            localStorage.clear();
+            showAlert("تم مسح البيانات بنجاح! سيتم إعادة التحميل. ✅");
+            setTimeout(() => location.reload(), 1500);
+        }, true);
+    }
 
     document.getElementById('reg-avatar-file')?.addEventListener('change', function(e) {
         const file = e.target.files[0];

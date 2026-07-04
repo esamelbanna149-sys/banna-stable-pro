@@ -2,12 +2,15 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ELBANNA STORE | Stable Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --main: #00ffcc; --bg: #050505; --card: #121212; --text: #ffffff; --danger: #ff4444; --star: #ffca08; --gray: #1a1a1a; }
+        :root { --main: #a855f7; --bg: #050505; --card: #121212; --text: #ffffff; --danger: #ff4444; --star: #ffca08; --gray: #1a1a1a; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-thumb { background: var(--main); border-radius: 10px; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
@@ -198,16 +201,28 @@
         <textarea id="new-app-code" placeholder="الصق كود HTML هنا" style="height:100px;"></textarea>
         <button class="save-btn" onclick="publishApp()">حفظ ونشر سحابي 🚀</button>
     </div>
-    <div class="admin-box">
-        <h4>تحديث كيان المتجر</h4>
-        <button class="save-btn" style="background:var(--danger);" onclick="openStoreUpdateGate()">تحديث كيان المتجر 🔄</button>
-        <div id="store-update-box" style="display:none; margin-top:15px;">
-            <p style="font-size:12px; color:#f77; margin-bottom:8px;">تحذير: هيتم استبدال ملف المتجر بالكامل بالكود اللي هتلصقه. تأكد إنه صحيح 100% قبل الرفع.</p>
-            <textarea id="store-new-code" placeholder="الصق كود HTML الجديد الكامل للمتجر هنا" style="height:140px;"></textarea>
-            <button class="save-btn" onclick="updateStoreCode()">رفع التحديث سحابياً 🚀</button>
-        </div>
+    <div class="admin-box" style="border-color: var(--danger);">
+        <h4 style="color: var(--danger);"><i class="fas fa-cloud-upload-alt"></i> تحديث كيان المتجر</h4>
+        <p style="font-size:12px; color:#999; margin-top:8px; margin-bottom:10px;">يحدّث كود المتجر نفسه سحابياً على GitHub. يتطلب باسورد مختلف عن باسورد الإدارة. التحديث نهائي ويظهر لكل من فتح المتجر تلقائياً.</p>
+        <button class="save-btn" style="background:var(--danger); color:#fff;" onclick="openStoreUpdateGate()"><i class="fas fa-cloud-upload-alt"></i> تحديث كيان المتجر</button>
     </div>
     <button class="save-btn" style="background:#222; color:#fff;" onclick="closeAdmin()">إغلاق</button>
+</div>
+
+<!-- نافذة تحديث كيان المتجر -->
+<div id="store-update-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:8600;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px);">
+    <div style="background:var(--card);border:1px solid var(--danger);border-radius:25px;padding:25px;width:90%;max-width:500px;max-height:85vh;overflow-y:auto;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+            <h3 style="color:var(--danger);font-size:17px;"><i class="fas fa-exclamation-triangle"></i> تحديث كيان المتجر</h3>
+            <i class="fas fa-times" onclick="closeStoreUpdate()" style="cursor:pointer;color:#aaa;font-size:20px;"></i>
+        </div>
+        <p style="font-size:12px;color:#777;margin-bottom:8px;">الصق كود الـ HTML الكامل الجديد للمتجر هنا:</p>
+        <textarea id="store-update-code" placeholder="<!DOCTYPE html>..." style="height:220px;resize:vertical;font-family:monospace;font-size:11px;"></textarea>
+        <div style="display:flex;gap:10px;margin-top:5px;">
+            <button class="save-btn" style="background:var(--danger);color:#fff;" onclick="confirmStoreUpdate()"><i class="fas fa-cloud-upload-alt"></i> تحديث سحابي الآن</button>
+            <button class="save-btn" style="background:#222;color:#fff;width:90px;" onclick="closeStoreUpdate()">إلغاء</button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -215,9 +230,8 @@
     const PART_2 = "4GByHDpDfvdiNg0mx9rO";
     const GITHUB_TOKEN = PART_1 + PART_2;
     const ADMIN_KEY = "mano5112006";
-    const STORE_UPDATE_KEY = "ahmedesam5112006";
-    const STORE_TOKEN =ضع_التوكن_الجديد_هنا"; // حط التوكن الجديد بتاع elbanna-store-updater هنا بس، على جهازك مباشرة قبل الرفع
-    const STORE_FILE_PATH = "index.html"; // اسم الملف الحقيقي اللي شغال عليه المتجر - عدّله لو مختلف
+    const UPDATE_KEY = "ahmedesam5112006";
+    const STORE_FILE_PATH = "index.html"; // اسم ملف المتجر نفسه داخل الـ repo
     const GITHUB_USER = "esamelbanna149-sys"; 
     const REPO_NAME = "banna-stable-pro";
     const FILE_PATH = "apps.json";            
@@ -367,39 +381,6 @@
             showAlert("تم النشر بنجاح! 🚀"); loadAppsFromServer(); closeAdmin();
             clearPublishForm(); 
         } catch (e) { showAlert("خطأ في الاتصال بالسيرفر!"); }
-    }
-
-    function openStoreUpdateGate() {
-        showAlert("أدخل كلمة مرور تحديث المتجر", true, (pass) => {
-            if(pass === STORE_UPDATE_KEY) {
-                document.getElementById('store-update-box').style.display = 'block';
-            } else {
-                showAlert("عذراً، كلمة المرور خاطئة! ❌");
-            }
-        });
-    }
-
-    async function updateStoreCode() {
-        const newCode = document.getElementById('store-new-code').value;
-        if(!newCode.trim()) {
-            return showAlert("خطأ: الصق الكود الجديد أولاً!", false, null, true);
-        }
-        showAlert(`تأكيد: هيتم استبدال ملف المتجر بالكامل. متأكد؟`, false, async () => {
-            try {
-                const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/${STORE_FILE_PATH}`;
-                const res = await fetch(url, { headers: { "Authorization": `token ${STORE_TOKEN}` } });
-                const data = await res.json();
-                if(!res.ok) throw new Error(data.message || "فشل جلب الملف الحالي");
-                await fetch(url, {
-                    method: "PUT",
-                    headers: { "Authorization": `token ${STORE_TOKEN}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: "Update store", content: btoa(unescape(encodeURIComponent(newCode))), sha: data.sha })
-                });
-                showAlert("تم تحديث المتجر بنجاح! 🚀 التغييرات هتظهر لأي حد بعد دقيقة أو اتنين.");
-                document.getElementById('store-new-code').value = "";
-                document.getElementById('store-update-box').style.display = 'none';
-            } catch (e) { showAlert("فشل التحديث سحابياً: " + e.message); }
-        }, true);
     }
 
     document.getElementById('new-app-icon-file')?.addEventListener('change', function(e) {
@@ -680,12 +661,65 @@
         reader.readAsDataURL(file);
     });
     function closeAdmin() { document.getElementById('admin-panel').style.display = 'none'; }
+
+    function openStoreUpdateGate() {
+        showAlert("أدخل كلمة مرور تحديث المتجر", true, (pass) => {
+            if (pass === UPDATE_KEY) {
+                document.getElementById('store-update-code').value = "";
+                document.getElementById('store-update-overlay').style.display = 'flex';
+            } else {
+                showAlert("عذراً، كلمة المرور خاطئة! ❌");
+            }
+        });
+    }
+
+    function closeStoreUpdate() {
+        document.getElementById('store-update-overlay').style.display = 'none';
+    }
+
+    async function confirmStoreUpdate() {
+        const newCode = document.getElementById('store-update-code').value;
+        if (!newCode.trim()) {
+            return showAlert("الصق كود المتجر الجديد أولاً!", false, null, true);
+        }
+
+        showAlert("هل أنت متأكد من تحديث المتجر بالكامل؟ التحديث فوري ولا يمكن التراجع عنه!", false, async () => {
+            try {
+                const url = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/${STORE_FILE_PATH}`;
+                const res = await fetch(url, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
+                if (!res.ok) throw new Error("File not found");
+                const data = await res.json();
+
+                await fetch(url, {
+                    method: "PUT",
+                    headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        message: "Update Store Entity",
+                        content: btoa(unescape(encodeURIComponent(newCode))),
+                        sha: data.sha
+                    })
+                });
+
+                closeStoreUpdate();
+                showAlert("تم تحديث المتجر سحابياً بنجاح! سيظهر التحديث لكل من يفتح المتجر خلال دقيقة 🚀");
+            } catch (e) {
+                showAlert("فشل التحديث! تأكد من اتصال الإنترنت أو من أن ملف المتجر موجود بنفس الاسم في الـ repo.", false, null, true);
+            }
+        }, true);
+    }
     function searchApps() {
         const q = document.getElementById('app-search').value.toLowerCase();
         renderApps(myStore.filter(a => a.name.toLowerCase().includes(q)));
     }
 
-    window.onload = () => { if(activeUser) login(activeUser); else loadAppsFromServer(); };
+    window.onload = () => { 
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(regs => {
+                regs.forEach(reg => reg.unregister());
+            });
+        }
+        if(activeUser) login(activeUser); else loadAppsFromServer(); 
+    };
 </script>
 
 <!-- نافذة تعديل التطبيق -->

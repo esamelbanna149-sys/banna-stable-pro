@@ -20,7 +20,7 @@ jobs:
 
       - name: Init Bubblewrap project
         run: |
-          bubblewrap init --manifest https://esamelbanna149-sys.github.io/elbanna-store/manifest.json --directory ./bubblewrap-project -y
+          yes | bubblewrap init --manifest https://esamelbanna149-sys.github.io/elbanna-store/manifest.json --directory ./bubblewrap-project --directory ./bubblewrap-project -y
 
       - name: Build APK
         working-directory: ./bubblewrap-project

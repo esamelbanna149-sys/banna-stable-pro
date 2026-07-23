@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --main: #00ffcc; --bg: #050505; --card: #121212; --text: #ffffff; --danger: #ff4444; --star: #ffca08; --gray: #1a1a1a; }
+        :root { --main: #ff8800; --bg: #050505; --card: #121212; --text: #ffffff; --danger: #ff4444; --star: #ffca08; --gray: #1a1a1a; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-thumb { background: var(--main); border-radius: 10px; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
@@ -91,14 +91,9 @@
         <span>إعدادات الحساب</span>
     </a>
 
-    <a href="javascript:void(0)" id="admin-sidebar-btn" onclick="openAdminGate()" class="contact-link" style="display:flex;">
+    <a href="javascript:void(0)" id="admin-sidebar-btn" onclick="openAdminGate()" class="contact-link" style="display:none;">
         <i class="fas fa-shield-alt" style="color: var(--main); font-size: 20px;"></i>
-        <span>لوحة المطور</span>
-    </a>
-
-    <a href="javascript:void(0)" onclick="clearAllData()" class="contact-link">
-        <i class="fas fa-trash-alt" style="color: var(--danger); font-size: 20px;"></i>
-        <span>مسح البيانات</span>
+        <span>لوحة الإدارة</span>
     </a>
 
     <p style="font-size: 12px; color: #777; margin-bottom: 10px; margin-right: 5px; margin-top: 25px;">لمحة عن المبرمج:</p>
@@ -251,6 +246,7 @@
         if (sidebar.style.right === '0px') {
             sidebar.style.right = '-300px';
             overlay.style.display = 'none';
+            document.getElementById('admin-sidebar-btn').style.display = 'none';
             footerClickCount = 0;
         } else {
             sidebar.style.right = '0px';
@@ -326,6 +322,7 @@
                 clearPublishForm();
                 document.getElementById('contact-sidebar').style.right = '-300px';
                 document.getElementById('sidebar-overlay').style.display = 'none';
+                document.getElementById('admin-sidebar-btn').style.display = 'none';
                 footerClickCount = 0;
                 document.getElementById('admin-panel').style.display = 'block';
                 renderAdminManage();
@@ -662,16 +659,9 @@
     });
     function closeAdmin() { document.getElementById('admin-panel').style.display = 'none'; }
 
-    function clearAllData() {
-        showAlert("هل أنت متأكد من مسح كل بيانات الجهاز (الحساب، الجلسة، الإعدادات)؟ لا يمكن التراجع عن هذا الإجراء!", false, () => {
-            localStorage.clear();
-            location.reload();
-        }, true);
-    }
-
     function openStoreUpdateGate() {
         showAlert("أدخل كلمة مرور تحديث المتجر", true, (pass) => {
-            if (pass === ADMIN_KEY) {
+            if (pass === UPDATE_KEY) {
                 document.getElementById('store-update-code').value = "";
                 document.getElementById('store-update-overlay').style.display = 'flex';
             } else {
